@@ -61,13 +61,6 @@ class AboutWidget(QFrame):
 
         self.aboutFeedbackVBox = QVBoxLayout(self)
         self.aboutFeedbackLabel = QLabel("反馈", self)
-        self.aboutFeedbackDocumentHyperlink = HyperlinkCard(
-            url='https://auroraziling.github.io/asta/',
-            text="访问",
-            parent=self,
-            icon=FluentIcon.GLOBE,
-            title="Sangonomiya 文档"
-        )
         self.aboutFeedbackGithubIssueHyperlink = HyperlinkCard(
             url='https://github.com/AuroraZiling/asta/issues',
             text="提交",
@@ -83,7 +76,6 @@ class AboutWidget(QFrame):
             title="Github Pull Request"
         )
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackLabel)
-        self.aboutFeedbackVBox.addWidget(self.aboutFeedbackDocumentHyperlink)
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackGithubIssueHyperlink)
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackGithubPullRequestHyperlink)
         self.aboutVBox.addLayout(self.aboutFeedbackVBox)
@@ -136,6 +128,5 @@ class AboutWidget(QFrame):
         self.aboutOpenSourceTextEdit.setPlainText(utils.openSourceLicense)
         # Feedback
         self.aboutFeedbackLabel.setFont(utils.getFont(16))
-        self.aboutFeedbackDocumentHyperlink.setFont(utils.getFont(12))
         self.aboutFeedbackGithubIssueHyperlink.setFont(utils.getFont(12))
         self.aboutFeedbackGithubPullRequestHyperlink.setFont(utils.getFont(12))
