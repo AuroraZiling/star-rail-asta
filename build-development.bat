@@ -1,1 +1,1 @@
-nuitka --enable-plugin=pyside6 --standalone --windows-icon-from-ico=.\src\assets\avatar.png --output-dir=build --include-plugin-directory=.\src\modules --include-data-dir=.\src\assets=assets --output-filename="Sangonomiya" .\src\sangonomiya.py
+nuitka --enable-plugin=pyside6 --standalone --windows-icon-from-ico=.\src\assets\avatar.png --output-dir=build --include-plugin-directory=.\src\modules --include-data-dir=.\src\assets=assets --output-filename="Asta" .\src\asta.py

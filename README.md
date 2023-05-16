@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="25%" align="center" src="https://s1.imagehub.cc/images/2023/05/16/avatar_rounded.png" alt="logo">
+  <img width="18%" align="center" src="https://s1.imagehub.cc/images/2023/05/16/avatar_rounded.png" alt="logo">
 </p>
 <h1 align="center">
   Asta
@@ -29,11 +29,11 @@
 
 ### Coding Artifact
 
-https://sangonomiya.coding.net/public-artifacts/sangonomiya/release/packages
+https://sangonomiya.coding.net/public-artifacts/asta/release/packages
 
 ### GitHub Release
 
-https://github.com/AuroraZiling/sangonomiya/releases
+https://github.com/AuroraZiling/asta/releases
 
 ## 卸载 / Uninstall
 
