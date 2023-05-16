@@ -1,0 +1,23 @@
+QLabel#glyphsTitleLabel {
+    font: 33px 'Segoe UI', 'Microsoft YaHei';
+    background-color: transparent;
+    color: black;
+}
+
+QLabel#glyphsSubTitleLabel {
+    font: 12px 'Segoe UI', 'Microsoft YaHei';
+    background-color: transparent;
+    color: grey;
+}
+
+QLabel#glyphsTextOriginalLabel {
+    font: 16px 'Segoe UI', 'Microsoft YaHei';
+    background-color: transparent;
+    color: black;
+}
+
+QLabel#glyphsTextTranslatedLabel {
+    font: 16px 'Segoe UI', 'Microsoft YaHei';
+    background-color: transparent;
+    color: black;
+}

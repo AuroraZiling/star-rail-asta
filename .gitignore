@@ -1,0 +1,16 @@
+/dist/
+/build/
+/hidden_imports/
+/src/_devTools/
+/src/_expLab/
+/src/cache/
+/src/logs/
+/ui_lib/
+/VirtualPython/
+/old_src/cache/
+/old_src/pray_history/
+*.pyc
+*/__pycache__
+/old_src/requestUrl.txt
+/src/data/
+/src/configs/

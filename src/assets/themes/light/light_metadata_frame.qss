@@ -1,0 +1,11 @@
+QLabel#metaDataTitleLabel {
+    font: 33px 'Microsoft YaHei Light';
+    background-color: transparent;
+    color: black;
+}
+
+QLabel#metaDataSubTitleLabel {
+    font: 12px 'Microsoft YaHei';
+    background-color: transparent;
+    color: grey;
+}
