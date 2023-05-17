@@ -23,7 +23,8 @@ def installUpdate():
     if os.path.exists(f"{utils.workingDir}/asta.py"):
         return
     with open('temp/update.bat', 'w') as f:
-        f.write(UPDATE_SCRIPT_MODEL.format(filename=os.listdir(f"{utils.workingDir}/temp")[0]))
+        target = [i for i in os.listdir(f"{utils.workingDir}/temp") if not ".bat" in i]
+        f.write(UPDATE_SCRIPT_MODEL.format(filename=target[0]))
 
     subprocess.Popen(
         [

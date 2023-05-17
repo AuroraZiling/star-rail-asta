@@ -15,6 +15,7 @@ from .ViewFunctions.settingsFunctions import UpdateThread
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 from ..Scripts.UI import custom_icon, custom_dialog
+from ..Scripts.UI.custom_dialog import ComboboxDialog
 from ..Scripts.UI.style_sheet import StyleSheet
 from ..Scripts.Utils import config_utils, log_recorder as log, updater
 from ..Scripts.Utils.updater import installUpdate, cleanUpdateZip
@@ -270,25 +271,33 @@ class SettingWidget(ScrollArea):
                     installUpdate()
                 self.updateThreadStateTooltip = None
 
-    def __updateCheckCardClicked(self):
-        cleanUpdateZip()
-        newVersion = updater.isNeedUpdate(utils.appVersion)
-        if newVersion is None:
-            InfoBar.success("提示", "Asta 无需更新", InfoBarPosition.TOP_RIGHT, parent=self.window())
-            return
-        elif isinstance(newVersion, tuple):
-            InfoBar.error("错误", f"Asta 更新请求超过限额\n请于{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(newVersion[1]['X-RateLimit-Reset'])))}之后再试", InfoBarPosition.TOP_RIGHT, parent=self.window())
-            return
-        w = MessageBox("更新", f"发现新版本: {newVersion['tag_name']}\n是否更新?", self)
-        if w.exec():
+    def __updateReturnSignal(self, msg):
+        if msg:
+            downloadWay = "Github Release" if "Github" in msg else "Coding Artifact"
             self.updateCheckCard.setEnabled(False)
-            self.updateThread = UpdateThread(newVersion)
+            self.updateThread = UpdateThread(self.newVersion, downloadWay)
             self.updateThreadStateTooltip = StateToolTip("正在更新", "下载更新中...", self)
             self.updateThreadStateTooltip.closedSignal.connect(self.__updateThreadStateTooltipClosed)
             self.updateThreadStateTooltip.move(5, 5)
             self.updateThreadStateTooltip.show()
             self.updateThread.start()
             self.updateThread.trigger.connect(self.updateThreadStatusChanged)
+
+    def __updateCheckCardClicked(self):
+        cleanUpdateZip()
+        self.newVersion = updater.isNeedUpdate(utils.appVersion)
+        if self.newVersion is None:
+            InfoBar.success("提示", "Asta 无需更新", InfoBarPosition.TOP_RIGHT, parent=self.window())
+            return
+        elif isinstance(self.newVersion, tuple):
+            InfoBar.error("错误",
+                          f"Asta 更新请求超过限额\n请于{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(self.newVersion[1]['X-RateLimit-Reset'])))}之后再试",
+                          InfoBarPosition.TOP_RIGHT, parent=self.window())
+            return
+        w = ComboboxDialog("更新", f"发现新版本: {self.newVersion['tag_name']}\n是否更新?",
+                           ["Coding Artifact (国内推荐)", "Github Release (国外推荐)"], self)
+        w.returnSignal.connect(self.__updateReturnSignal)
+        w.exec()
 
     def __connectSignalToSlot(self):
         cfg.appRestartSig.connect(lambda: InfoBar.warning("警告", self.tr(
