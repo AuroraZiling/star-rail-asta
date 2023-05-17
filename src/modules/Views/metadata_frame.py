@@ -4,7 +4,7 @@ from qfluentwidgets import SwitchSettingCard, PushSettingCard, InfoBar, InfoBarP
 from qfluentwidgets import FluentIcon
 
 from .ViewConfigs.config import cfg
-from .ViewFunctions.metadataFunctions import MetadataUpdateThread
+from .ViewFunctions.metadataFunctions import MetadataUpdateThread, MetadataUIGFUpdateThread
 from ..Scripts.Utils import config_utils, log_recorder as log
 from ..Scripts.UI.style_sheet import StyleSheet
 
@@ -43,6 +43,16 @@ class MetaDataWidget(QFrame):
 
         self.metaDataUpdateProgressBar = IndeterminateProgressBar(self)
 
+        self.metaDataUIGFUpdateCard = PushSettingCard(
+            "更新",
+            FluentIcon.UPDATE,
+            "更新UIGF API数据",
+            "",
+            parent=self
+        )
+
+        self.metaDataUIGFUpdateProgressBar = IndeterminateProgressBar(self)
+
         self.baseVBox.addWidget(self.metaDataTitleLabel)
         self.baseVBox.addWidget(self.metaDataSubTitleLabel)
         self.baseVBox.addWidget(self.metaDataAutoUpdateLabel)
@@ -50,6 +60,8 @@ class MetaDataWidget(QFrame):
         self.baseVBox.addWidget(self.metaDataCharacterWeaponUpdateLabel)
         self.baseVBox.addWidget(self.metaDataUpdateCard)
         self.baseVBox.addWidget(self.metaDataUpdateProgressBar)
+        self.baseVBox.addWidget(self.metaDataUIGFUpdateCard)
+        self.baseVBox.addWidget(self.metaDataUIGFUpdateProgressBar)
         self.baseVBox.addStretch(1)
 
         self.setObjectName("MetaDataWidget")
@@ -72,6 +84,20 @@ class MetaDataWidget(QFrame):
         self.metaDataUpdateThread.start()
         self.metaDataUpdateThread.trigger.connect(self.__metaDataUpdateCardSignal)
 
+    def __metaDataUIGFUpdateCardSignal(self, status):
+        message = "UIGF API 数据已更新" if status else "UIGF API 数据无需更新"
+        self.metaDataUIGFUpdateCard.setEnabled(True)
+        self.metaDataUIGFUpdateProgressBar.setVisible(False)
+        InfoBar.success("成功", message, position=InfoBarPosition.TOP_RIGHT, parent=self)
+        log.infoWrite(f"[Metadata] UIGF metadata updated")
+
+    def __metaDataUIGFUpdateCardClicked(self):
+        self.metaDataUIGFUpdateCard.setEnabled(False)
+        self.metaDataUIGFUpdateProgressBar.setVisible(True)
+        self.metaDataUIGFUpdateThread = MetadataUIGFUpdateThread()
+        self.metaDataUIGFUpdateThread.start()
+        self.metaDataUIGFUpdateThread.trigger.connect(self.__metaDataUIGFUpdateCardSignal)
+
     def initFrame(self):
         self.metaDataTitleLabel.setObjectName("metaDataTitleLabel")
         self.metaDataSubTitleLabel.setObjectName("metaDataSubTitleLabel")
@@ -79,5 +105,12 @@ class MetaDataWidget(QFrame):
         self.metaDataCharacterWeaponUpdateLabel.setFont(utils.getFont(18))
 
         self.metaDataUpdateProgressBar.setVisible(False)
+        self.metaDataUIGFUpdateProgressBar.setVisible(False)
 
         self.metaDataUpdateCard.clicked.connect(self.__metaDataUpdateCardClicked)
+
+        self.metaDataUIGFUpdateCard.clicked.connect(self.__metaDataUIGFUpdateCardClicked)
+
+        if cfg.metaDataUpdateAtStartUp.value:
+            self.__metaDataUpdateCardClicked()
+            self.__metaDataUIGFUpdateCardClicked()

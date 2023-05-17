@@ -19,15 +19,22 @@ def getDataFromUID(uid):
 
 
 def sortDataByTime(data):
-    return [i[:-1] for i in sorted(data, key=lambda unit: unit[-1])][::-1]
+    return [i for i in sorted(data, key=lambda unit: unit["timestamp"])][::-1]
 
 
 def convertDataToTable(data):
     categories = {"1": [], "11": [], "12": []}
     copied_categories = {"1": [], "11": [], "12": []}
     for unit in data["list"]:
-        categories[unit["uigf_gacha_type"]].append([unit["item_type"], unit["name"], unit["time"]])
-        copied_categories[unit["uigf_gacha_type"]].append([unit["item_type"], unit["name"], unit["time"], time.mktime(time.strptime(unit["time"], "%Y-%m-%d %H:%M:%S"))])
+        eachUnit = {
+            "item_type": unit["item_type"],
+            "name": unit["name"],
+            "time": unit["time"],
+            "rank_type": unit["rank_type"]
+        }
+        categories[unit["uigf_gacha_type"]].append(eachUnit)
+        eachUnit.update({"timestamp": time.mktime(time.strptime(unit["time"], "%Y-%m-%d %H:%M:%S"))})
+        copied_categories[unit["uigf_gacha_type"]].append(eachUnit)
     categories["1"] = sortDataByTime(copied_categories["1"])
     categories["11"] = sortDataByTime(copied_categories["11"])
     categories["12"] = sortDataByTime(copied_categories["12"])

@@ -1,5 +1,5 @@
 # coding:utf-8
-import webbrowser
+import time
 
 from PySide6 import QtGui
 from PySide6.QtCore import Qt, Signal
@@ -7,15 +7,17 @@ from PySide6.QtWidgets import QWidget, QLabel, QFileDialog
 
 from qfluentwidgets import (SettingCardGroup, PushSettingCard, ScrollArea, ExpandLayout, isDarkTheme, Dialog,
                             OptionsSettingCard,
-                            SwitchSettingCard, setTheme, InfoBar, MessageBox)
+                            SwitchSettingCard, setTheme, InfoBar, MessageBox, StateToolTip)
 from qfluentwidgets import FluentIcon, InfoBarPosition, qconfig
 
 from .ViewConfigs.config import cfg
+from .ViewFunctions.settingsFunctions import UpdateThread
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 from ..Scripts.UI import custom_icon, custom_dialog
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import config_utils, log_recorder as log
+from ..Scripts.Utils import config_utils, log_recorder as log, updater
+from ..Scripts.Utils.updater import installUpdate, cleanUpdateZip
 
 utils = config_utils.ConfigUtils()
 
@@ -30,6 +32,8 @@ class SettingWidget(ScrollArea):
         self.settingLabel = QLabel("设置", self)
 
         self.configPath = utils.configPath
+        self.updateThread = None
+        self.updateThreadStateTooltip = None
 
         # Game
 
@@ -249,9 +253,44 @@ class SettingWidget(ScrollArea):
         self.defaultCacheDeleteCard.titleLabel.setText(
             f"清空缓存文件 (约 {utils.getDirSize(utils.workingDir + '/cache')} MB)")
 
+    def __updateThreadStateTooltipClosed(self):
+        self.updateThread.exit(0)
+        self.updateCheckCard.setEnabled(True)
+        self.updateThreadStatusChanged(1, "Operation cancelled")
+        InfoBar.warning("操作终止", "更新已停止",
+                        position=InfoBarPosition.BOTTOM, parent=self)
+
+    def updateThreadStatusChanged(self, status, content):
+        if self.updateThreadStateTooltip:
+            self.updateThreadStateTooltip.setContent(content)
+            if status:
+                self.updateCheckCard.setEnabled(True)
+                self.updateThreadStateTooltip.setState(True)
+                if status == 2:
+                    installUpdate()
+                self.updateThreadStateTooltip = None
+
+    def __updateCheckCardClicked(self):
+        cleanUpdateZip()
+        newVersion = updater.isNeedUpdate(utils.appVersion)
+        if newVersion is None:
+            InfoBar.success("提示", "Asta 无需更新", InfoBarPosition.TOP_RIGHT, parent=self.window())
+            return
+        elif isinstance(newVersion, tuple):
+            InfoBar.error("错误", f"Asta 更新请求超过限额\n请于{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(newVersion[1]['X-RateLimit-Reset'])))}之后再试", InfoBarPosition.TOP_RIGHT, parent=self.window())
+            return
+        w = MessageBox("更新", f"发现新版本: {newVersion['tag_name']}\n是否更新?", self)
+        if w.exec():
+            self.updateCheckCard.setEnabled(False)
+            self.updateThread = UpdateThread(newVersion)
+            self.updateThreadStateTooltip = StateToolTip("正在更新", "下载更新中...", self)
+            self.updateThreadStateTooltip.closedSignal.connect(self.__updateThreadStateTooltipClosed)
+            self.updateThreadStateTooltip.move(5, 5)
+            self.updateThreadStateTooltip.show()
+            self.updateThread.start()
+            self.updateThread.trigger.connect(self.updateThreadStatusChanged)
 
     def __connectSignalToSlot(self):
-        """ connect signal to slot """
         cfg.appRestartSig.connect(lambda: InfoBar.warning("警告", self.tr(
             "更改将在应用重启后更新"), parent=self.window(), position=InfoBarPosition.TOP_RIGHT))
         cfg.themeChanged.connect(setTheme)
@@ -270,3 +309,6 @@ class SettingWidget(ScrollArea):
         self.defaultUIDDeleteCard.clicked.connect(self.__defaultUIDDeleteCardClicked)
         self.defaultLogDeleteCard.clicked.connect(self.__defaultLogDeleteCardClicked)
         self.defaultCacheDeleteCard.clicked.connect(self.__defaultCacheDeleteCardClicked)
+
+        # Updater
+        self.updateCheckCard.clicked.connect(self.__updateCheckCardClicked)

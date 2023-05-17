@@ -249,10 +249,12 @@ class GachaReportWidget(QFrame):
         rowColorMapping = {}
         for index, each in enumerate(currentData):
             for eachColumn in range(0, 6):
+                columnModel = [each["order"], each["item_type"], each["name"], each["time"], each["gacha_mode"],
+                               each["guarantee"], each["color"]]
                 self.bottomLeftGachaTable.setItem(index, eachColumn, QTableWidgetItem())
                 self.bottomLeftGachaTable.setRowHeight(index, 40)
-                self.bottomLeftGachaTable.item(index, eachColumn).setText(each[eachColumn])
-                rowColorMapping.update({index: QColor(each[6])})
+                self.bottomLeftGachaTable.item(index, eachColumn).setText(columnModel[eachColumn])
+                rowColorMapping.update({index: QColor(columnModel[6])})
         self.bottomLeftGachaTable.setItemDelegate(CustomTableItemDelegate(self.bottomLeftGachaTable))
         log.infoWrite(f"[GachaReport] Gacha table updated")
 
