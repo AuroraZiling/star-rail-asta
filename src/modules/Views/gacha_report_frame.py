@@ -144,7 +144,7 @@ class GachaReportWidget(QFrame):
             self.headerRightFullUpdateDropBtn.setEnabled(True)
 
     def __headerRightFullUpdateDropBtnWebCache(self):
-        gachaURL = convertAPI(by_web_cache.getURL(getDefaultGameDataPath()))
+        gachaURL = convertAPI(by_web_cache.getURL(cfg.gameDataFolder.value))
         if gachaURL:
             resp = MessageBox("成功", "请求已被获取，是否更新数据?", self)
             if resp.exec():
@@ -158,7 +158,7 @@ class GachaReportWidget(QFrame):
                 self.gachaReportThread.start()
                 self.gachaReportThread.trigger.connect(self.gachaReportStatusChanged)
         else:
-            MessageBox("失败", "无法从游戏缓存中获取请求", self)
+            InfoBar.error("失败", "无法从游戏缓存中获取请求", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __headerRightFullUpdateDropBtnURL(self):
         w = URLDialog("输入URL", "请在下方输入MiHoYoAPI的URL", self)

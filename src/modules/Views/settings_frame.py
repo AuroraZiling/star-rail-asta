@@ -1,4 +1,5 @@
 # coding:utf-8
+import json
 import time
 
 from PySide6 import QtGui
@@ -11,7 +12,7 @@ from qfluentwidgets import (SettingCardGroup, PushSettingCard, ScrollArea, Expan
 from qfluentwidgets import FluentIcon, InfoBarPosition, qconfig
 
 from .ViewConfigs.config import cfg
-from .ViewFunctions.settingsFunctions import UpdateThread
+from .ViewFunctions.settingsFunctions import UpdateThread, IsNeedUpdateThread
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 from ..Scripts.UI import custom_icon, custom_dialog
@@ -33,8 +34,11 @@ class SettingWidget(ScrollArea):
         self.settingLabel = QLabel("设置", self)
 
         self.configPath = utils.configPath
+        self.newVersion = None
         self.updateThread = None
         self.updateThreadStateTooltip = None
+        self.isNeedUpdateThread = None
+        self.isNeedUpdateThreadStateTooltip = None
 
         # Game
 
@@ -283,21 +287,28 @@ class SettingWidget(ScrollArea):
             self.updateThread.start()
             self.updateThread.trigger.connect(self.updateThreadStatusChanged)
 
+    def isNeedUpdateThreadStatusChanged(self, status, content):
+        if status == 1:
+            InfoBar.success("提示", content, InfoBarPosition.TOP_RIGHT, parent=self)
+        elif status == 2:
+            InfoBar.error("错误", content, InfoBarPosition.TOP_RIGHT, parent=self)
+        elif status == 0:
+            self.newVersion = content
+            self.isNeedUpdateThreadStateTooltip.setState(True)
+            self.isNeedUpdateThreadStateTooltip = None
+            w = ComboboxDialog("更新", f"发现新版本: {self.newVersion['tag_name']}\n是否更新?",
+                               ["Coding Artifact (国内推荐)", "Github Release (国外推荐)"], self)
+            w.returnSignal.connect(self.__updateReturnSignal)
+            w.exec()
+
     def __updateCheckCardClicked(self):
-        cleanUpdateZip()
-        self.newVersion = updater.isNeedUpdate(utils.appVersion)
-        if self.newVersion is None:
-            InfoBar.success("提示", "Asta 无需更新", InfoBarPosition.TOP_RIGHT, parent=self.window())
-            return
-        elif isinstance(self.newVersion, tuple):
-            InfoBar.error("错误",
-                          f"Asta 更新请求超过限额\n请于{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(self.newVersion[1]['X-RateLimit-Reset'])))}之后再试",
-                          InfoBarPosition.TOP_RIGHT, parent=self.window())
-            return
-        w = ComboboxDialog("更新", f"发现新版本: {self.newVersion['tag_name']}\n是否更新?",
-                           ["Coding Artifact (国内推荐)", "Github Release (国外推荐)"], self)
-        w.returnSignal.connect(self.__updateReturnSignal)
-        w.exec()
+        self.updateCheckCard.setEnabled(False)
+        self.isNeedUpdateThread = IsNeedUpdateThread(utils.appVersion)
+        self.isNeedUpdateThreadStateTooltip = StateToolTip("更新", "正在获取版本号...", self)
+        self.isNeedUpdateThreadStateTooltip.move(5, 5)
+        self.isNeedUpdateThreadStateTooltip.show()
+        self.isNeedUpdateThread.start()
+        self.isNeedUpdateThread.trigger.connect(self.isNeedUpdateThreadStatusChanged)
 
     def __connectSignalToSlot(self):
         cfg.appRestartSig.connect(lambda: InfoBar.warning("警告", self.tr(

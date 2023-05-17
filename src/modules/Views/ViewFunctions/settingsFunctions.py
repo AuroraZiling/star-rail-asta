@@ -1,9 +1,13 @@
 import os
+import time
 
 import requests
 from PySide6.QtCore import Signal, QThread
 
-from ...constant import GITHUB_RELEASE_URL
+from ...Scripts.Utils import updater, config_utils
+from ...Scripts.Utils.updater import cleanUpdateZip
+
+utils = config_utils.ConfigUtils()
 
 
 class UpdateThread(QThread):
@@ -40,3 +44,24 @@ class UpdateThread(QThread):
                     f.write(chunk)
                     self.trigger.emit(0, f"正在下载: {f.tell()} 字节/{count} 字节")
         self.trigger.emit(2, "更新下载完毕")
+
+
+class IsNeedUpdateThread(QThread):
+    trigger = Signal(int, object)
+
+    def __init__(self, appVersion, parent=None):
+        super(IsNeedUpdateThread, self).__init__(parent)
+        self.appVersion = appVersion
+        self.newVersion = {}
+
+    def run(self):
+        cleanUpdateZip()
+        self.newVersion = updater.isNeedUpdate(utils.appVersion)
+        if self.newVersion is None:
+            self.trigger.emit(1, "Asta 无需更新")
+            return
+        elif isinstance(self.newVersion, tuple):
+            self.trigger.emit(2,
+                              f"Asta 更新请求超过限额\n请于{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(self.newVersion[1]['X-RateLimit-Reset'])))}之后再试")
+            return
+        self.trigger.emit(0, dict(self.newVersion))

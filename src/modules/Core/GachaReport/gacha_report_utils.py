@@ -28,8 +28,10 @@ def extractAPI(url):
 
 
 def convertAPI(url):
-    return "https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog?" + url.split("?")[1]
-
+    if url:
+        return "https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog?" + url.split("?")[1]
+    else:
+        return None
 
 def updateAPI(url, gachaType, size, page, end_id):
     apiParameters = dict(parse.parse_qsl(parse.urlparse(url).query))
