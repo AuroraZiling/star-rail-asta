@@ -63,7 +63,7 @@ class Config(QConfig):
 
     # MetaData
     metaDataUpdateAtStartUp = ConfigItem(
-        "MetaData", "metaDataUpdateAtStartUp", True, BoolValidator()
+        "MetaData", "metaDataUpdateAtStartUp", False, BoolValidator()
     )
 
 

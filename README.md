@@ -20,6 +20,9 @@
   <a style="text-decoration:none">
     <img src=https://img.shields.io/badge/License-GPLv3-orange?style=flat-square alt="GPL-3.0"/>
   </a>
+  <a style="text-decoration:none" target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=MPwaE6OZjVQ_qo5wjcJE3V0bG0g3YBSZ&jump_from=webapi&authKey=B13Bxv+5eKZRRxNfxdz2tegBeaSTJxAjFlp0Gk0qssad0d2CquSFKSBnr+8djGOB">
+    <img src=https://img.shields.io/badge/交流群-603155398-red?style=flat-square alt="GPL-3.0"/>
+  </a>
 </p>
 
 
