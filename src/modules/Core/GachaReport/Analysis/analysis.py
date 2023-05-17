@@ -81,20 +81,20 @@ class Analysis:
                 guarantee_text += f"\n最近一次在第{nearest_5_star[0]}抽得到{nearest_5_star[2]}"
                 guarantee_text += f"\n将在第{int(nearest_5_star[0]) + additional_fix}抽之前必出当期UP"
                 guarantee_text += f"\n当前已经{self.total_amount}/{int(nearest_5_star[0]) + additional_fix}抽, 还差{int(nearest_5_star[0]) + additional_fix - self.total_amount}抽"
-                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}原石"
+                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}星琼"
             elif nearest_5_star[2] not in self.permanentList:
                 guarantee_text += "情况: 保底重置/等待小保底"
                 guarantee_text += f"\n最近一次在第{nearest_5_star[0]}抽得到{nearest_5_star[2]}"
                 guarantee_text += f"\n(第{int(nearest_5_star[0]) + additional_fix}抽之前有50%的概率出当期UP，在第{int(nearest_5_star[0]) + 2 * additional_fix}抽之前必出当期UP)"
                 guarantee_text += f"\n小保底: 当前已经{self.total_amount}/{int(nearest_5_star[0]) + additional_fix}抽, 还差{int(nearest_5_star[0]) + additional_fix - self.total_amount}抽"
-                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}原石"
+                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}星琼"
                 guarantee_text += f"\n大保底: 当前已经{self.total_amount}/{int(nearest_5_star[0]) + 2 * additional_fix}抽, 还差{int(nearest_5_star[0]) + 2 * additional_fix - self.total_amount}抽"
-                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + 2 * additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + 2 * additional_fix - self.total_amount) * 160}原石"
+                guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + 2 * additional_fix - self.total_amount}张星轨专票, 约等于{(int(nearest_5_star[0]) + 2 * additional_fix - self.total_amount) * 160}星琼"
         elif is_permanent_pool:
             guarantee_text += f"最近一次在第{nearest_5_star[0]}抽得到{nearest_5_star[2]}"
             guarantee_text += f"\n将在第{int(nearest_5_star[0]) + 90}抽之前必出五星"
             guarantee_text += f"\n当前已经{self.total_amount}/{int(nearest_5_star[0]) + additional_fix}抽, 还差{int(nearest_5_star[0]) + additional_fix - self.total_amount}抽"
-            guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨通票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}原石"
+            guarantee_text += f"\n预计最多需要{int(nearest_5_star[0]) + additional_fix - self.total_amount}张星轨通票, 约等于{(int(nearest_5_star[0]) + additional_fix - self.total_amount) * 160}星琼"
         elif not nearest_5_star:
             guarantee_text = "暂无数据"
         return guarantee_text
