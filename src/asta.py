@@ -17,14 +17,14 @@ from qfluentwidgets import FluentIcon, NavigationInterface, NavigationItemPositi
 from qframelesswindow import FramelessWindow
 
 from modules.Scripts.Utils.file_verification import assetsCheck
-
 from modules.Views import home_frame, gacha_report_frame, link_frame, \
     settings_frame, about_frame, metadata_frame, glyphs_frame
 from modules.Scripts.UI import custom_icon
 from modules.Scripts.UI.title_bar import CustomTitleBar
 from modules.Scripts.UI.style_sheet import StyleSheet
-from modules.Scripts.Utils import file_verification, metadata_utils, config_utils, downloader, log_recorder as log
-from modules.Metadata import character_list, weapon_list
+from modules.Scripts.Utils import file_verification, metadata_utils, config_utils, log_recorder as log
+from modules.Metadata import character_list
+from src.modules.Views import announcement_frame
 
 utils = config_utils.ConfigUtils()
 
@@ -57,7 +57,7 @@ class GlobalExceptHookHandler(object):
     def __BuildLogger(self):
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
-        logger.addHandler(logging.FileHandler(self.__logFile))
+        logger.addHandler(logging.FileHandler(self.__logFile, encoding="utf-8"))
         return logger
 
     def __HandleException(self, excType, excValue, tb):
@@ -96,6 +96,7 @@ class Window(FramelessWindow):
         self.mainHomeInterface = home_frame.HomeWidget(self)
         self.mainGachaReportInterface = gacha_report_frame.GachaReportWidget(self)
         self.mainLinkInterface = link_frame.LinkWidget(self)
+        self.mainAnnouncementInterface = announcement_frame.AnnouncementWidget(self)
         self.mainGlyphsInterface = glyphs_frame.GlyphsWidget(self)
         self.mainMetaDataInterface = metadata_frame.MetaDataWidget(self)
         self.mainSettingInterface = settings_frame.SettingWidget(self)
@@ -104,6 +105,7 @@ class Window(FramelessWindow):
         self.mainStackWidget.addWidget(self.mainHomeInterface)
         self.mainStackWidget.addWidget(self.mainGachaReportInterface)
         self.mainStackWidget.addWidget(self.mainLinkInterface)
+        self.mainStackWidget.addWidget(self.mainAnnouncementInterface)
         self.mainStackWidget.addWidget(self.mainGlyphsInterface)
         self.mainStackWidget.addWidget(self.mainMetaDataInterface)
         self.mainStackWidget.addWidget(self.mainSettingInterface)
@@ -148,6 +150,13 @@ class Window(FramelessWindow):
             icon=custom_icon.MyFluentIcon.DATA,
             text="UIGF",
             onClick=lambda: self.switchTo(self.mainLinkInterface)
+        )
+
+        self.mainNavigationInterface.addItem(
+            routeKey=self.mainAnnouncementInterface.objectName(),
+            icon=custom_icon.MyFluentIcon.ANNOUNCEMENT,
+            text="公告",
+            onClick=lambda: self.switchTo(self.mainAnnouncementInterface)
         )
 
         self.mainNavigationInterface.addSeparator()

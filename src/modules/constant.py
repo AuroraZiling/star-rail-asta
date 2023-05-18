@@ -16,6 +16,27 @@ COLOR_MAPPING = {"3": "#1E90FF", "4": "#7B68EE", "5": "#FFA500", "X": "#FF0000"}
 FONT_MAPPING = ["StarRailNeue-Sans-Regular.otf", "StarRailNeue-Serif-Regular.otf"]
 FONT_NAME_MAPPING = ["Star Rail Neue Sans-", "Star Rail Neue Serif-"]
 
+ANNOUNCE_CURRENT_UP_URL = "https://api-takumi.mihoyo.com/common/blackboard/sr_wiki/v1/gacha_pool?app_sn=sr_wiki"
+
+ANNOUNCE_REQUEST_URL = "https://hkrpg-api-static.mihoyo.com/common/hkrpg_cn/announcement/api/getAnnContent?game=hkrpg&game_biz=hkrpg_cn&lang=zh-cn&bundle_id=hkrpg_cn&platform=pc&region=prod_gf_cn&level=70&channel_id=1"
+ANNOUNCE_ICON_REQUEST_URL = "https://hkrpg-api.mihoyo.com/common/hkrpg_cn/announcement/api/getAnnList?game=hkrpg&game_biz=hkrpg_cn&lang=zh-cn&auth_appid=announcement&authkey_ver=1&bundle_id=hkrpg_cn&channel_id=1&level=47&platform=pc&region=prod_gf_cn&sdk_presentation_style=fullscreen&sdk_screen_transparent=true&sign_type=2&uid=1"
+HTML_MODEL = '''
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+    body::-webkit-scrollbar {display: none;}
+    {css}
+  </style>
+  </head>
+  <body style="background-color: transparent;">
+    <article class="markdown-body" style="background-color: transparent;">
+        {content}
+    </article>
+  </body>
+</html>
+'''
+
 GITHUB_RELEASE_URL = "https://api.github.com/repos/AuroraZiling/star-rail-asta/releases/latest"
 
 UPDATE_SCRIPT_MODEL = """

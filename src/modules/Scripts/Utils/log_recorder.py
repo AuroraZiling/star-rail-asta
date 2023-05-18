@@ -35,5 +35,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     filename=utils.logDir + "/" + logFileName,
-    filemode='w'
+    filemode='w',
+    encoding="utf-8"
 )

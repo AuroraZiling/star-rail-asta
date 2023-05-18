@@ -215,8 +215,10 @@ class SettingWidget(ScrollArea):
 
         StyleSheet.SETTING_FRAME.apply(self)
 
-    def __showMessageBox(self, title, content):
-        Dialog(title, content, self).exec()
+    def closeEvent(self, event):
+        self.updateThread.exit()
+        self.isNeedUpdateThread.exit()
+        event.accept()
 
     def __gameDataCardClicked(self):
         folder = QFileDialog.getExistingDirectory(

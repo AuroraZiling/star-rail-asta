@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QAbstrac
     QTableWidgetItem, QStyleOptionViewItem
 
 from qfluentwidgets import FluentIcon, RoundMenu, TableWidget, TextEdit, MessageBox, InfoBarPosition, ComboBox, \
-    Action, InfoBar, StateToolTip, TableItemDelegate, InfoBarIcon, isDarkTheme
+    Action, InfoBar, StateToolTip, TableItemDelegate, isDarkTheme
 from qfluentwidgets import DropDownPushButton
 
 from .ViewConfigs.config import cfg
@@ -14,7 +14,7 @@ from ..Scripts.Utils import config_utils, log_recorder as log
 from ..Core.GachaReport.gacha_report_thread import GachaReportThread
 from ..Scripts.UI.style_sheet import StyleSheet
 from ..Scripts.UI.custom_dialog import URLDialog
-from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath, convertAPI
+from ..Core.GachaReport.gacha_report_utils import convertAPI
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.Analysis import table_completion, analysis
 from ..Core.GachaReport.MihoyoAPI import by_web_cache
@@ -110,6 +110,10 @@ class GachaReportWidget(QFrame):
         self.initFrame()
 
         self.initData()
+
+    def closeEvent(self, event):
+        self.gachaReportThread.exit()
+        event.accept()
 
     def __gachaReportThreadStateTooltipClosed(self):
         self.gachaReportThread.exit(0)

@@ -70,6 +70,11 @@ class MetaDataWidget(QFrame):
 
         log.infoWrite("[Settings] All cache files deleted")
 
+    def closeEvent(self, event):
+        self.metaDataUpdateThread.exit()
+        self.metaDataUIGFUpdateThread.exit()
+        event.accept()
+
     def __metaDataUpdateCardSignal(self, status):
         if status:
             self.metaDataUpdateCard.setEnabled(True)
