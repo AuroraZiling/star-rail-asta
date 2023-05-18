@@ -19,7 +19,15 @@ def getDataFromUID(uid):
 
 
 def sortDataByTime(data):
-    return [i for i in sorted(data, key=lambda unit: unit["timestamp"])][::-1]
+    opt = [i for i in sorted(data, key=lambda unit: unit["timestamp"])][::-1]
+    index = 0
+    while index < len(opt)-10:
+        if opt[index]["timestamp"] == opt[index+1]["timestamp"]:
+            for innerIndex in range(0, 5):
+                opt[index+innerIndex], opt[index + 9 - innerIndex] = opt[index + 9 - innerIndex], opt[index+innerIndex]
+            index += 9
+        index += 1
+    return opt
 
 
 def convertDataToTable(data):

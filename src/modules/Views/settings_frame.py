@@ -230,7 +230,7 @@ class SettingWidget(ScrollArea):
 
     def __gameDataResetCardClicked(self):
         cfg.set(cfg.gameDataFolder, getDefaultGameDataPath())
-        self.gameDataCard.setContent(getDefaultGameDataPath())
+        self.gameDataCard.setContent(cfg.get(cfg.gameDataFolder))
         log.infoWrite(f"[Settings] Game path reset")
 
     @staticmethod

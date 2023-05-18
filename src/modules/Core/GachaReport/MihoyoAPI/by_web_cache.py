@@ -10,7 +10,7 @@ utils = Tools()
 
 def getURL(gameDataPath):
     url = None
-    webCacheData = Path(gameDataPath) / "webCaches/Cache/Cache_Data/data_2"
+    webCacheData = Path(gameDataPath) / "StarRail_Data/webCaches/Cache/Cache_Data/data_2"
     webCacheDataTmp = Path(GetTempFileName(GetTempPath(), f"webCacheData", 0)[0])
     if not os.path.exists(str(webCacheData)):
         return None
