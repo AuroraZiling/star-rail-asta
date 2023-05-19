@@ -9,7 +9,7 @@ import time
 import win32clipboard
 from PySide6.QtGui import QFont
 
-from src.modules.Metadata import character_list, weapon_list
+from ...Metadata import character_list, weapon_list
 
 
 class Tools:
@@ -24,6 +24,16 @@ class Tools:
 
         self.license = self.__get_license()
         self.open_source_license = self.__get_open_source_license()
+
+        logFileName = "Asta " + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + ".log"
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+            filename=self.log_dir + "/" + logFileName,
+            filemode='w',
+            encoding="utf-8"
+        )
 
     @staticmethod
     def __get_working_dir() -> str:
@@ -208,4 +218,3 @@ class Tools:
         except json.decoder.JSONDecodeError:
             return False
         return True
-

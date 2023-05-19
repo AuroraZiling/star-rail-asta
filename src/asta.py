@@ -74,17 +74,6 @@ class Window(FramelessWindow):
     def __init__(self):
         super().__init__()
 
-        utils.create_directory(f"{utils.working_dir}/logs")
-        logFileName = "Sangonomiya " + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + ".log"
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S',
-            filename=utils.log_dir + "/" + logFileName,
-            filemode='w',
-            encoding="utf-8"
-        )
-
         self.initMetaData()
 
         self.setTitleBar(CustomTitleBar(self))
@@ -205,8 +194,8 @@ class Window(FramelessWindow):
         self.titleBar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
 
         desktop = QApplication.screens()[0].availableGeometry()
-        width, height = desktop.width(), desktop.height()
-        self.move(width // 2 - self.width() // 2, height // 2 - self.height() // 2)
+        w, h = desktop.width(), desktop.height()
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
 
         StyleSheet.MAIN_WINDOW.apply(self)
 
