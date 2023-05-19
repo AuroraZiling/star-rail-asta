@@ -242,7 +242,7 @@ class SettingWidget(ScrollArea):
         w.exec()
 
     def __defaultLogDeleteCardClicked(self):
-        delete_all_cache()
+        delete_all_log()
         InfoBar.success("成功", "旧日志文件已清空", InfoBarPosition.TOP_RIGHT, parent=self.window())
 
     def showEvent(self, a0: QtGui.QShowEvent) -> None:

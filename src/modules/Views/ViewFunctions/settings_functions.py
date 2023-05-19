@@ -11,11 +11,21 @@ from ...Scripts.Utils.updater import cleanUpdateZip
 utils = tools.Tools()
 
 
-def delete_all_cache():
-    logDir = os.listdir(f"{utils.working_dir}/cache")
+def delete_all_log():
+    logDir = os.listdir(f"{utils.working_dir}/logs")
     for eachLogFile in logDir:
         try:
-            os.remove(f"{utils.working_dir}/cache/{eachLogFile}")
+            os.remove(f"{utils.working_dir}/logs/{eachLogFile}")
+        except PermissionError:
+            continue
+    logging.info("[Settings] All logs deleted")
+
+
+def delete_all_cache():
+    cacheDir = os.listdir(f"{utils.working_dir}/cache")
+    for eachCacheFile in cacheDir:
+        try:
+            os.remove(f"{utils.working_dir}/cache/{eachCacheFile}")
         except PermissionError:
             continue
     logging.info("[Settings] All cache files deleted")
