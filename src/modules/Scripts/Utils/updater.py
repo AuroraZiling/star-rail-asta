@@ -12,18 +12,18 @@ utils = Tools()
 
 
 def cleanUpdateZip():
-    if os.path.exists(f"{utils.workingDir}/temp"):
-        shutil.rmtree(f"{utils.workingDir}/temp")
-    os.mkdir(f"{utils.workingDir}/temp")
+    if os.path.exists(f"{utils.working_dir}/temp"):
+        shutil.rmtree(f"{utils.working_dir}/temp")
+    os.mkdir(f"{utils.working_dir}/temp")
 
 
 def installUpdate():
-    if not os.listdir(f"{utils.workingDir}/temp"):
+    if not os.listdir(f"{utils.working_dir}/temp"):
         return
-    if os.path.exists(f"{utils.workingDir}/asta.py"):
+    if os.path.exists(f"{utils.working_dir}/asta.py"):
         return
     with open('temp/update.bat', 'w') as f:
-        target = [i for i in os.listdir(f"{utils.workingDir}/temp") if not ".bat" in i]
+        target = [i for i in os.listdir(f"{utils.working_dir}/temp") if ".bat" not in i]
         f.write(UPDATE_SCRIPT_MODEL.format(filename=target[0]))
 
     subprocess.Popen(

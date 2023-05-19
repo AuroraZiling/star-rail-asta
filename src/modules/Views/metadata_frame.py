@@ -1,14 +1,16 @@
+import logging
+
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 from qfluentwidgets import SwitchSettingCard, PushSettingCard, InfoBar, InfoBarPosition, IndeterminateProgressBar
 from qfluentwidgets import FluentIcon
 
-from .ViewConfigs.config import cfg
-from .ViewFunctions.metadataFunctions import MetadataUpdateThread, MetadataUIGFUpdateThread
-from ..Scripts.Utils import config_utils, log_recorder as log
+from ..config import cfg
+from .ViewFunctions.metadata_functions import MetadataUpdateThread, MetadataUIGFUpdateThread
+from ..Scripts.Utils import tools
 from ..Scripts.UI.style_sheet import StyleSheet
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class MetaDataWidget(QFrame):
@@ -68,7 +70,7 @@ class MetaDataWidget(QFrame):
         self.initFrame()
         StyleSheet.METADATA_FRAME.apply(self)
 
-        log.infoWrite("[Settings] All cache files deleted")
+        logging.info("[Settings] All cache files deleted")
 
     def closeEvent(self, event):
         self.metaDataUpdateThread.exit()
@@ -80,7 +82,7 @@ class MetaDataWidget(QFrame):
             self.metaDataUpdateCard.setEnabled(True)
             self.metaDataUpdateProgressBar.setVisible(False)
             InfoBar.success("成功", "元数据已更新", position=InfoBarPosition.TOP_RIGHT, parent=self)
-            log.infoWrite(f"[Metadata] Character and weapon metadata updated")
+            logging.info(f"[Metadata] Character and weapon metadata updated")
 
     def __metaDataUpdateCardClicked(self):
         self.metaDataUpdateCard.setEnabled(False)
@@ -94,7 +96,7 @@ class MetaDataWidget(QFrame):
         self.metaDataUIGFUpdateCard.setEnabled(True)
         self.metaDataUIGFUpdateProgressBar.setVisible(False)
         InfoBar.success("成功", message, position=InfoBarPosition.TOP_RIGHT, parent=self)
-        log.infoWrite(f"[Metadata] UIGF metadata updated")
+        logging.info(f"[Metadata] UIGF metadata updated")
 
     def __metaDataUIGFUpdateCardClicked(self):
         self.metaDataUIGFUpdateCard.setEnabled(False)
@@ -106,8 +108,8 @@ class MetaDataWidget(QFrame):
     def initFrame(self):
         self.metaDataTitleLabel.setObjectName("metaDataTitleLabel")
         self.metaDataSubTitleLabel.setObjectName("metaDataSubTitleLabel")
-        self.metaDataAutoUpdateLabel.setFont(utils.getFont(18))
-        self.metaDataCharacterWeaponUpdateLabel.setFont(utils.getFont(18))
+        self.metaDataAutoUpdateLabel.setFont(utils.get_font(18))
+        self.metaDataCharacterWeaponUpdateLabel.setFont(utils.get_font(18))
 
         self.metaDataUpdateProgressBar.setVisible(False)
         self.metaDataUIGFUpdateProgressBar.setVisible(False)

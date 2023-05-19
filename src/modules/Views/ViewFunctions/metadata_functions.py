@@ -1,10 +1,9 @@
 from PySide6.QtCore import QThread, Signal
 
-from ...Scripts.Utils import metadata_utils
-from ...Scripts.Utils.config_utils import ConfigUtils
+from ...Scripts.Utils import tools
 from ...Metadata.UIGF_API import updateUIGFItemIdList
 
-utils = ConfigUtils()
+utils = tools.Tools()
 
 
 class MetadataUpdateThread(QThread):
@@ -14,10 +13,11 @@ class MetadataUpdateThread(QThread):
         super(MetadataUpdateThread, self).__init__(parent)
 
     def run(self):
-        metadata_utils.updateMetaData("character")
-        metadata_utils.updateMetaData("weapon")
-        metadata_utils.updateMetaData("permanent")
+        utils.update_metadata("character")
+        utils.update_metadata("weapon")
+        utils.update_metadata("permanent")
         self.trigger.emit(True)
+
 
 class MetadataUIGFUpdateThread(QThread):
     trigger = Signal(bool)
@@ -26,5 +26,5 @@ class MetadataUIGFUpdateThread(QThread):
         super(MetadataUIGFUpdateThread, self).__init__(parent)
 
     def run(self):
-        result = updateUIGFItemIdList("chs", f"{utils.configPath}/metadata/uigf_dict.json")
+        result = updateUIGFItemIdList("chs", f"{utils.config_dir}/metadata/uigf_dict.json")
         self.trigger.emit(result)

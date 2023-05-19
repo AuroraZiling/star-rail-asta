@@ -1,19 +1,13 @@
 # coding:utf-8
-import json
 from enum import Enum
 
 from PySide6.QtCore import QLocale
 from qfluentwidgets import qconfig, QConfig, ConfigItem, BoolValidator, FolderValidator, ConfigSerializer
 
-from ...Scripts.Utils.config_utils import ConfigUtils
-from ...Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
+from .Scripts.Utils.tools import Tools
+from .Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 
-utils = ConfigUtils()
-
-workingDir = utils.workingDir
-configPath = utils.configPath
-settingsLocal = json.loads(open(f"{workingDir}/assets/configs/application.json", 'r').read())
-appVersion, UIVersion = settingsLocal["application_version"], settingsLocal["ui_version"]
+utils = Tools()
 
 
 class Language(Enum):
@@ -39,8 +33,8 @@ class Config(QConfig):
     """ Config of application """
 
     # General
-    ConfigItem("Versions", "application", appVersion)
-    ConfigItem("Versions", "ui", UIVersion)
+    ConfigItem("Versions", "application", utils.app_version)
+    ConfigItem("Versions", "ui", utils.app_version)
 
     # Game
     gameDataFolder = ConfigItem(
@@ -68,4 +62,4 @@ class Config(QConfig):
 
 
 cfg = Config()
-qconfig.load(f"{configPath}/settings.json", cfg)
+qconfig.load(f"{utils.config_dir}/settings.json", cfg)

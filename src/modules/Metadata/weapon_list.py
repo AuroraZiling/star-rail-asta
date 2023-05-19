@@ -3,7 +3,6 @@ from lxml import etree
 from ..constant import WEAPON_URL
 
 
-
 def categoryWeaponInStar():
     originalData = requests.get(WEAPON_URL).text
     html = etree.HTML(originalData)

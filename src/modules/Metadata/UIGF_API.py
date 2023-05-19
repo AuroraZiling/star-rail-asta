@@ -12,8 +12,8 @@ utils = Tools()
 
 
 def updateUIGFItemIdList(language, localPath):
-    if not os.path.exists(f"{utils.getConfigPath()}/metadata/"):
-        os.mkdir(f"{utils.getConfigPath()}/metadata/")
+    if not os.path.exists(f"{utils.config_dir}/metadata/"):
+        os.mkdir(f"{utils.config_dir}/metadata/")
     if not os.path.exists(localPath):
         with open(localPath, 'wb') as f:
             text = json.dumps(getUIGFItemIdList(language), indent=4, ensure_ascii=False).replace('\r\n', '\n')

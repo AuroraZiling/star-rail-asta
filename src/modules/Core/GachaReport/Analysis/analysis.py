@@ -3,8 +3,10 @@ from PySide6.QtCore import Qt, QRectF
 from PySide6.QtGui import QColor, QFont
 
 from qfluentwidgets import isDarkTheme
-from ....Scripts.Utils.metadata_utils import readMetaData
+from ....Scripts.Utils import tools
 from ....constant import COLOR_MAPPING
+
+utils = tools.Tools()
 
 
 class Analysis:
@@ -32,9 +34,9 @@ class Analysis:
         self.chart4Star = QPieSlice()
         self.chart3Star = QPieSlice()
 
-        self.characterList = readMetaData("character")
-        self.weaponList = readMetaData("weapon")
-        self.permanentList = readMetaData("permanent")
+        self.characterList = utils.read_metadata("character")
+        self.weaponList = utils.read_metadata("weapon")
+        self.permanentList = utils.read_metadata("permanent")
 
     def get_total_amount_to_string(self):
         return str(self.total_amount)

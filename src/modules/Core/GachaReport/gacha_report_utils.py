@@ -1,21 +1,20 @@
 import os
 import re
+import logging
 from urllib import parse
-
-from ...Scripts.Utils import log_recorder as log
 
 GAME_LOG_PATH = os.environ["userprofile"] + '/AppData/LocalLow/miHoYo/崩坏：星穹铁道/Player.log'
 
 
 def getDefaultGameDataPath():
     if not os.path.exists(GAME_LOG_PATH):
-        log.infoWrite(f"[GachaReport.utils] Game Path not found")
+        logging.info(f"[GachaReport.utils] Game Path not found")
         return 0, "Game Log Not found"
     with open(GAME_LOG_PATH, 'r', encoding='utf-8') as f:
         logFile = f.read()
     match = re.match(r'Loading player data from (.*)StarRail_Data.*', logFile)
     game_path = match.group(1) if match else None
-    log.infoWrite(f"[GachaReport.utils] Game Path get: {game_path}")
+    logging.info(f"[GachaReport.utils] Game Path get: {game_path}")
     return game_path
 
 

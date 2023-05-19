@@ -8,7 +8,7 @@ from qfluentwidgets.components.dialog_box.dialog import Ui_MessageBox
 from qfluentwidgets.components.dialog_box.mask_dialog_base import MaskDialogBase
 
 from ..Utils.tools import Tools
-from ...Core.GachaReport import gacha_report_read
+from ...Core.GachaReport import gacha_report_utils
 
 utils = Tools()
 
@@ -42,7 +42,7 @@ class URLDialog(MaskDialogBase, Ui_MessageBox):
         self.getFromClipboardBtn.clicked.connect(self.__getFromClipboardBtnClicked)
 
     def __getFromClipboardBtnClicked(self):
-        clipboardText = gacha_report_read.extractAPI(utils.getClipboardText())
+        clipboardText = gacha_report_utils.extractAPI(utils.get_clipboard_text())
         if clipboardText:
             self.textEditWidget.setText(clipboardText)
 

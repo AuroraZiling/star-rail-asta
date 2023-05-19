@@ -9,9 +9,9 @@ from PySide6.QtCore import QThread, Signal
 from ...constant import UIGF_VERSION, UIGF_DATA_MODEL, GACHATYPE, UIGF_GACHATYPE
 from ..UIGF.converter import originalToUIGFListUnit
 from .gacha_report_utils import updateAPI
-from ...Scripts.Utils.config_utils import ConfigUtils
+from ...Scripts.Utils.tools import Tools
 
-utils = ConfigUtils()
+utils = Tools()
 gachaTarget = ""
 
 
@@ -48,16 +48,16 @@ class GachaReportThread(QThread):
                 else:
                     self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开祈愿记录的时间间隔在一天以内"))
                     return
-        pathlib.Path(f"{utils.workingDir}/data/{self.uid}").mkdir(parents=True, exist_ok=True)
+        pathlib.Path(f"{utils.working_dir}/data/{self.uid}").mkdir(parents=True, exist_ok=True)
         UIGFExportJsonData["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         UIGFExportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
         UIGFExportJsonData["info"]["export_app"] = "asta"
-        UIGFExportJsonData["info"]["export_app_version"] = utils.appVersion
+        UIGFExportJsonData["info"]["export_app_version"] = utils.app_version
         UIGFExportJsonData["info"]["uigf_version"] = UIGF_VERSION
         UIGFExportJsonData['info']['uid'] = self.uid
         UIGFExportJsonData["list"] = gachaList
-        open(f"{utils.workingDir}/data/{self.uid}/{self.uid}_export_data.json", "w", encoding="utf-8").write(
+        open(f"{utils.working_dir}/data/{self.uid}/{self.uid}_export_data.json", "w", encoding="utf-8").write(
             json.dumps(UIGFExportJsonData, indent=2, sort_keys=True, ensure_ascii=False))
-        with open(f"{utils.workingDir}/data/{self.uid}/{self.uid}_data.pickle", 'wb') as f:
+        with open(f"{utils.working_dir}/data/{self.uid}/{self.uid}_data.pickle", 'wb') as f:
             pickle.dump(UIGFExportJsonData, f)
         self.trigger.emit((1, "跃迁记录更新完毕", self.uid))

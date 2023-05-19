@@ -1,13 +1,15 @@
+import logging
+
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout
 
 from qfluentwidgets import PrimaryPushButton, FluentIcon, TextEdit
 
-from .ViewFunctions.homeFunctions import HomeSoftwareAnnouncementThread, HomeCurrentUPThread
+from .ViewFunctions.home_functions import HomeSoftwareAnnouncementThread, HomeCurrentUPThread
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import config_utils, log_recorder as log
+from ..Scripts.Utils import tools
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class HomeWidget(QFrame):
@@ -61,7 +63,7 @@ class HomeWidget(QFrame):
         self.getCurrentUPFromMetaData()
         self.getAnnouncementFromMetaData()
 
-        log.infoWrite("[Home] UI Initialized")
+        logging.info("[Home] UI Initialized")
 
     def closeEvent(self, event):
         self.homeCurrentUPThread.exit()
@@ -106,7 +108,7 @@ class HomeWidget(QFrame):
         self.homeCurrentUPThread = HomeCurrentUPThread()
         self.homeCurrentUPThread.start()
         self.homeCurrentUPThread.trigger.connect(self.__getCurrentUPFromMetaDataSignal)
-        log.infoWrite("[Home] Current UP Get")
+        logging.info("[Home] Current UP Get")
 
     def __getAnnouncementFromMetaDataSignal(self, info):
         self.announceTextBox.setText(info)
@@ -115,4 +117,4 @@ class HomeWidget(QFrame):
         self.homeSoftwareAnnouncementThread = HomeSoftwareAnnouncementThread()
         self.homeSoftwareAnnouncementThread.start()
         self.homeSoftwareAnnouncementThread.trigger.connect(self.__getAnnouncementFromMetaDataSignal)
-        log.infoWrite("[Home] Announcement Get")
+        logging.info("[Home] Announcement Get")

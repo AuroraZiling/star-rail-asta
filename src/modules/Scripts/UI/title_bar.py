@@ -18,14 +18,12 @@ class CustomTitleBar(TitleBar):
         self.hBoxLayout.removeWidget(self.maxBtn)
         self.hBoxLayout.removeWidget(self.closeBtn)
 
-        # add window icon
         self.iconLabel = QLabel(self)
         self.iconLabel.setFixedSize(24, 24)
         self.hBoxLayout.insertSpacing(0, 10)
         self.hBoxLayout.insertWidget(1, self.iconLabel, 0, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.window().windowIconChanged.connect(self.setIcon)
 
-        # add title label
         self.titleLabel = QLabel(self)
         self.hBoxLayout.insertWidget(2, self.titleLabel, 0, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.titleLabel.setObjectName('titleLabel')

@@ -1,4 +1,5 @@
 import webbrowser
+import logging
 
 from PySide6 import QtGui
 from PySide6.QtCore import Qt, QSize
@@ -7,29 +8,28 @@ from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QSizePol
 from qfluentwidgets import PrimaryPushButton, FluentIcon, InfoBar, PushButton, InfoBarPosition, isDarkTheme, ListWidget
 
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import downloader, log_recorder as log
-from ..Scripts.Utils.config_utils import ConfigUtils
-from .ViewFunctions import announcementFunctions
+from ..Scripts.Utils import downloader, tools
+from .ViewFunctions import announcement_functions
 from ..constant import ANNOUNCE_REQUEST_URL, ANNOUNCE_ICON_REQUEST_URL
 
-utils = ConfigUtils()
+utils = tools.Tools()
 
 
 class AnnouncementWidget(QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        if not (utils.jsonValidator(f"{utils.workingDir}/cache/announce.json") or utils.jsonValidator(f"{utils.workingDir}/cache/announce_icons.json")):
-            log.infoWrite("[Announcement] Get announce.json")
-            downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.workingDir + "/cache/", "announce.json")
-            log.infoWrite("[Announcement] Get announce_icon.json")
-            downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.workingDir + "/cache/",
+        if not (utils.json_validator(f"{utils.working_dir}/cache/announce.json") or utils.json_validator(f"{utils.working_dir}/cache/announce_icons.json")):
+            logging.info("[Announcement] Get announce.json")
+            downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.working_dir + "/cache/", "announce.json")
+            logging.info("[Announcement] Get announce_icon.json")
+            downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.working_dir + "/cache/",
                                         "announce_icons.json")
 
         self.baseVBox = QVBoxLayout(self)
 
-        self.announceData = utils.getAnnounceData()
-        self.announceIconData = utils.getAnnounceIconData()
+        self.announceData = announcement_functions.get_announce_data()
+        self.announceIconData = announcement_functions.get_announce_icon_data()
         self.currentAnnounceHTMLPath = ""
 
         self.headerHBox = QHBoxLayout(self)
@@ -72,9 +72,9 @@ class AnnouncementWidget(QFrame):
 
         self.baseVBox.addLayout(self.announceHBox)
 
-        log.infoWrite(f"[Announcement] UI Initialized")
+        logging.info(f"[Announcement] UI Initialized")
 
-        self.announceFunc = announcementFunctions.AnnouncementFunctions(self.announceData, self.announceIconData)
+        self.announceFunc = announcement_functions.AnnouncementFunctions(self.announceData, self.announceIconData)
         self.initAnnounce()
 
         self.setObjectName("AnnouncementFrame")
@@ -85,13 +85,13 @@ class AnnouncementWidget(QFrame):
     def initFrame(self):
         # Top - Left
         self.headerLeftAnnounceTitleLabel.setText("公告")
-        self.headerLeftAnnounceTitleLabel.setFont(utils.getFont(18))
+        self.headerLeftAnnounceTitleLabel.setFont(utils.get_font(18))
         self.headerLeftContentTitleLabel.setText("尚未选择公告")
-        self.headerLeftContentTitleLabel.setFont(utils.getFont(10))
+        self.headerLeftContentTitleLabel.setFont(utils.get_font(10))
         # Top - Right
         self.headerRightRefreshBtn.setFixedWidth(100)
-        self.headerRightAnnounceDateLabel.setText("于" + utils.getFileDate(f"{utils.workingDir}/cache/announce.json") + "更新")
-        self.headerRightAnnounceDateLabel.setFont(utils.getFont(10))
+        self.headerRightAnnounceDateLabel.setText("于" + utils.get_file_create_date(f"{utils.working_dir}/cache/announce.json") + "更新")
+        self.headerRightAnnounceDateLabel.setFont(utils.get_font(10))
         # List
         self.announceListBox.resize(200, 200)
         self.announceListBox.setFrameShape(QFrame.Shape.NoFrame)
@@ -103,7 +103,7 @@ class AnnouncementWidget(QFrame):
         self.contentBanner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.contentBanner.setMaximumWidth(750)
         self.contentBanner.setScaledContents(True)
-        self.contentNoBanner.setFont(utils.getFont(24))
+        self.contentNoBanner.setFont(utils.get_font(24))
         self.contentNoBanner.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.contentNoBanner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.contentHTMLBtn.setText("详情")
@@ -118,7 +118,7 @@ class AnnouncementWidget(QFrame):
 
     def __announceListBoxItemChanged(self):
         currentAnnounceData = self.announceFunc.getCurrentAnnounce(self.announceListBox.currentIndex().row())
-        log.infoWrite(f"[Announcement] Announcement changed: {currentAnnounceData['bigTitle']}")
+        logging.info(f"[Announcement] Announcement changed: {currentAnnounceData['bigTitle']}")
         self.headerLeftContentTitleLabel.setText(currentAnnounceData["bigTitle"])
         self.contentBanner.hide()
         if currentAnnounceData["banner"]:
@@ -132,24 +132,24 @@ class AnnouncementWidget(QFrame):
 
     def initAnnounce(self):
         self.announceFunc.getIcons()
-        self.headerRightAnnounceDateLabel.setText("于" + utils.getFileDate(f"{utils.workingDir}/cache/announce.json") + "更新")
+        self.headerRightAnnounceDateLabel.setText("于" + utils.get_file_create_date(f"{utils.working_dir}/cache/announce.json") + "更新")
         for index, item in enumerate(self.announceFunc.getItems()):
             self.announceListBox.addItem(item)
             self.announceListBox.item(index).setSizeHint(QSize(300, 30))
-        log.infoWrite(f"[Announcement] Announcement initialized")
+        logging.info(f"[Announcement] Announcement initialized")
         self.__announceListBoxItemChanged()
 
     def refreshAnnounce(self):
         self.announceListBox.clear()
-        downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.workingDir + "/cache/", "announce.json")
-        downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.workingDir + "/cache/",
+        downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.working_dir + "/cache/", "announce.json")
+        downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.working_dir + "/cache/",
                                     "announce_icons.json")
-        self.announceData = utils.getAnnounceData()
-        self.announceIconData = utils.getAnnounceIconData()
+        self.announceData = announcement_functions.get_announce_data()
+        self.announceIconData = announcement_functions.get_announce_icon_data()
         self.initAnnounce()
-        log.infoWrite("[Announcement] Announcement updated")
+        logging.info("[Announcement] Announcement updated")
         InfoBar.success("成功", "公告已更新", position=InfoBarPosition.TOP, parent=self)
 
     def openAnnounce(self):
-        webbrowser.open(f"{utils.workingDir}/cache/{self.announceListBox.currentRow()}.html")
-        log.infoWrite(f"[Announcement] Announcement opened at row:{self.announceListBox.currentRow()}")
+        webbrowser.open(f"{utils.working_dir}/cache/{self.announceListBox.currentRow()}.html")
+        logging.info(f"[Announcement] Announcement opened at row:{self.announceListBox.currentRow()}")

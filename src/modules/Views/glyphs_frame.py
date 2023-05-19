@@ -3,10 +3,10 @@ from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QGridLay
 
 from qfluentwidgets import TextEdit, PushButton, FluentIcon, ComboBox
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import config_utils
+from ..Scripts.Utils import tools
 from ..constant import FONT_MAPPING, FONT_NAME_MAPPING
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class GlyphsWidget(QFrame):
@@ -15,7 +15,7 @@ class GlyphsWidget(QFrame):
         super().__init__(parent=parent)
 
         for eachFont in FONT_MAPPING:
-            QFontDatabase.addApplicationFont(f"{utils.workingDir}/assets/Hoyo-Glyphs/{eachFont}")
+            QFontDatabase.addApplicationFont(f"{utils.working_dir}/assets/Hoyo-Glyphs/{eachFont}")
 
         self.currentFont = FONT_MAPPING[0]
 

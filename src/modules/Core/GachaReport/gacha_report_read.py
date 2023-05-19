@@ -8,12 +8,12 @@ utils = Tools()
 
 
 def getUIDList():
-    return os.listdir(f"{utils.workingDir}/data/")
+    return os.listdir(f"{utils.working_dir}/data/")
 
 
 def getDataFromUID(uid):
-    if os.path.exists(f"{utils.workingDir}/data/{uid}") and uid:
-        return pickle.load(open(f"{utils.workingDir}/data/{uid}/{uid}_data.pickle", 'rb'))
+    if os.path.exists(f"{utils.working_dir}/data/{uid}") and uid:
+        return pickle.load(open(f"{utils.working_dir}/data/{uid}/{uid}_data.pickle", 'rb'))
     else:
         return None
 

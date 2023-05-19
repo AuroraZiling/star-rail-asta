@@ -1,27 +1,25 @@
 # coding:utf-8
-import json
-import time
+import logging
 
 from PySide6 import QtGui
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QLabel, QFileDialog
 
-from qfluentwidgets import (SettingCardGroup, PushSettingCard, ScrollArea, ExpandLayout, isDarkTheme, Dialog,
-                            OptionsSettingCard,
-                            SwitchSettingCard, setTheme, InfoBar, MessageBox, StateToolTip)
+from qfluentwidgets import (SettingCardGroup, PushSettingCard, ScrollArea, ExpandLayout, OptionsSettingCard,
+                            SwitchSettingCard, setTheme, InfoBar, StateToolTip)
 from qfluentwidgets import FluentIcon, InfoBarPosition, qconfig
 
-from .ViewConfigs.config import cfg
-from .ViewFunctions.settingsFunctions import UpdateThread, IsNeedUpdateThread
+from ..config import cfg
+from .ViewFunctions.settings_functions import UpdateThread, IsNeedUpdateThread, delete_all_cache
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 from ..Scripts.UI import custom_icon, custom_dialog
 from ..Scripts.UI.custom_dialog import ComboboxDialog
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import config_utils, log_recorder as log, updater
-from ..Scripts.Utils.updater import installUpdate, cleanUpdateZip
+from ..Scripts.Utils import tools
+from ..Scripts.Utils.updater import installUpdate
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class SettingWidget(ScrollArea):
@@ -33,7 +31,6 @@ class SettingWidget(ScrollArea):
         self.expandLayout = ExpandLayout(self.scrollWidget)
         self.settingLabel = QLabel("设置", self)
 
-        self.configPath = utils.configPath
         self.newVersion = None
         self.updateThread = None
         self.updateThreadStateTooltip = None
@@ -85,7 +82,7 @@ class SettingWidget(ScrollArea):
             "打开",
             FluentIcon.FOLDER,
             "配置文件",
-            self.configPath,
+            utils.config_dir,
             self.storageGroup
         )
 
@@ -105,15 +102,15 @@ class SettingWidget(ScrollArea):
             "删除",
             custom_icon.MyFluentIcon.DELETE,
             "清空日志文件",
-            f"{utils.workingDir + '/logs'} 文件夹内的日志将被清空",
+            f"{utils.working_dir + '/logs'} 文件夹内的日志将被清空",
             self.defaultGroup
         )
 
         self.defaultCacheDeleteCard = PushSettingCard(
             "删除",
             custom_icon.MyFluentIcon.DELETE,
-            f"清空缓存文件 (约 {utils.getDirSize(utils.workingDir + '/cache')} MB)",
-            f"存放在 {utils.workingDir + '/cache'} 的缓存文件将被删除",
+            f"清空缓存文件 (约 {utils.get_directory_size(utils.working_dir + '/cache')} MB)",
+            f"存放在 {utils.working_dir + '/cache'} 的缓存文件将被删除",
             self.defaultGroup
         )
 
@@ -153,7 +150,7 @@ class SettingWidget(ScrollArea):
 
         self.__initWidget()
         self.setObjectName("SettingFrame")
-        log.infoWrite("[Settings] UI Initialized")
+        logging.info("[Settings] UI Initialized")
 
     def __initWidget(self):
         self.resize(1000, 800)
@@ -228,16 +225,16 @@ class SettingWidget(ScrollArea):
 
         cfg.set(cfg.gameDataFolder, folder)
         self.gameDataCard.setContent(folder)
-        log.infoWrite(f"[Settings] Game path changed: {folder}")
+        logging.info(f"[Settings] Game path changed: {folder}")
 
     def __gameDataResetCardClicked(self):
         cfg.set(cfg.gameDataFolder, getDefaultGameDataPath())
         self.gameDataCard.setContent(cfg.get(cfg.gameDataFolder))
-        log.infoWrite(f"[Settings] Game path reset")
+        logging.info(f"[Settings] Game path reset")
 
     @staticmethod
     def __defaultUIDDeleteCardReturnSignal(uid):
-        utils.deleteDir(f"{utils.workingDir}/data/{uid}/", False)
+        utils.delete_directory(f"{utils.working_dir}/data/{uid}/", False)
 
     def __defaultUIDDeleteCardClicked(self):
         w = custom_dialog.ComboboxDialog("删除UID数据档案", "选择UID", gacha_report_read.getUIDList(), self)
@@ -245,20 +242,20 @@ class SettingWidget(ScrollArea):
         w.exec()
 
     def __defaultLogDeleteCardClicked(self):
-        utils.deleteAllLogFiles()
+        delete_all_cache()
         InfoBar.success("成功", "旧日志文件已清空", InfoBarPosition.TOP_RIGHT, parent=self.window())
 
     def showEvent(self, a0: QtGui.QShowEvent) -> None:
         self.__defaultCacheSizeUpdate()
 
     def __defaultCacheDeleteCardClicked(self):
-        utils.deleteAllCacheFiles()
+        delete_all_cache()
         self.__defaultCacheSizeUpdate()
         InfoBar.success("成功", "缓存已清空", InfoBarPosition.TOP_RIGHT, parent=self.window())
 
     def __defaultCacheSizeUpdate(self):
         self.defaultCacheDeleteCard.titleLabel.setText(
-            f"清空缓存文件 (约 {utils.getDirSize(utils.workingDir + '/cache')} MB)")
+            f"清空缓存文件 (约 {utils.get_directory_size(utils.working_dir + '/cache')} MB)")
 
     def __updateThreadStateTooltipClosed(self):
         self.updateThread.exit(0)
@@ -305,7 +302,7 @@ class SettingWidget(ScrollArea):
 
     def __updateCheckCardClicked(self):
         self.updateCheckCard.setEnabled(False)
-        self.isNeedUpdateThread = IsNeedUpdateThread(utils.appVersion)
+        self.isNeedUpdateThread = IsNeedUpdateThread(utils.app_version)
         self.isNeedUpdateThreadStateTooltip = StateToolTip("更新", "正在获取版本号...", self)
         self.isNeedUpdateThreadStateTooltip.move(5, 5)
         self.isNeedUpdateThreadStateTooltip.show()
@@ -313,8 +310,9 @@ class SettingWidget(ScrollArea):
         self.isNeedUpdateThread.trigger.connect(self.isNeedUpdateThreadStatusChanged)
 
     def __connectSignalToSlot(self):
-        cfg.appRestartSig.connect(lambda: InfoBar.warning("警告", self.tr(
-            "更改将在应用重启后更新"), parent=self.window(), position=InfoBarPosition.TOP_RIGHT))
+        cfg.appRestartSig.connect(lambda: InfoBar.warning("警告",
+                                                          "更改将在应用重启后更新", parent=self.window(),
+                                                          position=InfoBarPosition.TOP_RIGHT))
         cfg.themeChanged.connect(setTheme)
 
         # Game
@@ -322,10 +320,10 @@ class SettingWidget(ScrollArea):
         self.gameDataResetCard.clicked.connect(self.__gameDataResetCardClicked)
 
         # Storage
-        self.storageDataCard.clicked.connect(lambda: utils.openFolder(cfg.get(cfg.storageDataFolders)))
-        self.storageCacheCard.clicked.connect(lambda: utils.openFolder(cfg.get(cfg.storageCacheFolders)))
-        self.storageLogCard.clicked.connect(lambda: utils.openFolder(cfg.get(cfg.storageLogFolders)))
-        self.storageConfigCard.clicked.connect(lambda: utils.openFolder(self.configPath))
+        self.storageDataCard.clicked.connect(lambda: utils.open_directory(cfg.get(cfg.storageDataFolders)))
+        self.storageCacheCard.clicked.connect(lambda: utils.open_directory(cfg.get(cfg.storageCacheFolders)))
+        self.storageLogCard.clicked.connect(lambda: utils.open_directory(cfg.get(cfg.storageLogFolders)))
+        self.storageConfigCard.clicked.connect(lambda: utils.open_directory(utils.config_dir))
 
         # Default
         self.defaultUIDDeleteCard.clicked.connect(self.__defaultUIDDeleteCardClicked)

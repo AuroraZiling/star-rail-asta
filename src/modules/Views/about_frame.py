@@ -1,14 +1,15 @@
+import logging
+
 from PySide6 import QtGui, QtWidgets
 from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout
 
 from qfluentwidgets import HyperlinkCard, isDarkTheme, TextEdit
-from qfluentwidgets import FluentIcon
 
 from ..Scripts.UI import custom_icon
 from ..Scripts.UI.style_sheet import StyleSheet
-from ..Scripts.Utils import config_utils, log_recorder as log
+from ..Scripts.Utils import tools
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class AboutWidget(QFrame):
@@ -25,7 +26,7 @@ class AboutWidget(QFrame):
 
         self.aboutTopProjDesVBox = QVBoxLayout(self)
         self.aboutTopProjDesLabel = QLabel("Asta", self)
-        self.aboutTopProjDesVersion = QLabel(f"{utils.appVersion} for {utils.OSName}", self)
+        self.aboutTopProjDesVersion = QLabel(f"{utils.app_version} for {utils.OS_name}", self)
         self.aboutTopProjDesLicense = QLabel("GPL v3.0", self)
         self.aboutTopProjDesGithub = QLabel("https://github.com/AuroraZiling/asta", self)
         self.aboutTopProjDesVBox.addWidget(self.aboutTopProjDesLabel)
@@ -41,7 +42,7 @@ class AboutWidget(QFrame):
         self.aboutTopUIDesVBox = QVBoxLayout(self)
         self.aboutTopUIDesDesignLabel = QLabel("UI Design", self)
         self.aboutTopUIDesLabel = QLabel("PyQt-Fluent-Widgets", self)
-        self.aboutTopUIDesVersion = QLabel(f"{utils.UIVersion} for PySide6", self)
+        self.aboutTopUIDesVersion = QLabel(f"{utils.ui_version} for PySide6", self)
         self.aboutTopUIDesGithub = QLabel("https://github.com/zhiyiYo/PyQt-Fluent-Widgets", self)
         self.aboutTopUIDesVBox.addWidget(self.aboutTopUIDesDesignLabel)
         self.aboutTopUIDesVBox.addWidget(self.aboutTopUIDesLabel)
@@ -86,7 +87,7 @@ class AboutWidget(QFrame):
         self.initGrid()
         self.initFrame()
         StyleSheet.ABOUT_FRAME.apply(self)
-        log.infoWrite("[About] UI initialized")
+        logging.info("[About] UI initialized")
 
     def initGrid(self):
         # Top
@@ -99,34 +100,34 @@ class AboutWidget(QFrame):
         # Top - Project Description
         self.aboutTopProjImage.move(60, 50)
         self.aboutTopProjImage.setFixedSize(128, 128)
-        self.aboutTopProjImage.setPixmap(QtGui.QPixmap(f"{utils.workingDir}/assets/avatar_rounded.png"))
+        self.aboutTopProjImage.setPixmap(QtGui.QPixmap(f"{utils.working_dir}/assets/avatar_rounded.png"))
         self.aboutTopProjImage.setScaledContents(True)
-        self.aboutTopProjDesLabel.setFont(utils.getFont(30))
-        self.aboutTopProjDesVersion.setFont(utils.getFont(12))
-        self.aboutTopProjDesLicense.setFont(utils.getFont(12))
+        self.aboutTopProjDesLabel.setFont(utils.get_font(30))
+        self.aboutTopProjDesVersion.setFont(utils.get_font(12))
+        self.aboutTopProjDesLicense.setFont(utils.get_font(12))
         self.aboutTopProjDesGithub.setStyleSheet("color: grey;")
-        self.aboutTopProjDesGithub.setFont(utils.getFont(8))
+        self.aboutTopProjDesGithub.setFont(utils.get_font(8))
         # Top - UI Design
         self.aboutTopUIImage.setFixedSize(85, 85)
-        self.aboutTopUIImage.setPixmap(QtGui.QPixmap(f"{utils.workingDir}/assets/pyqt-fluent-widgets-logo.png"))
+        self.aboutTopUIImage.setPixmap(QtGui.QPixmap(f"{utils.working_dir}/assets/pyqt-fluent-widgets-logo.png"))
         self.aboutTopUIImage.setScaledContents(True)
         self.aboutTopUIDesDesignLabel.setStyleSheet("margin-bottom: 0px;")
-        self.aboutTopUIDesDesignLabel.setFont(utils.getFont(8))
+        self.aboutTopUIDesDesignLabel.setFont(utils.get_font(8))
         self.aboutTopUIDesLabel.setStyleSheet("margin-top: 0px;")
-        self.aboutTopUIDesLabel.setFont(utils.getFont(20))
-        self.aboutTopUIDesVersion.setFont(utils.getFont(10))
+        self.aboutTopUIDesLabel.setFont(utils.get_font(20))
+        self.aboutTopUIDesVersion.setFont(utils.get_font(10))
         self.aboutTopUIDesGithub.setStyleSheet("color: grey;")
-        self.aboutTopUIDesGithub.setFont(utils.getFont(7))
+        self.aboutTopUIDesGithub.setFont(utils.get_font(7))
         # Open Source
-        self.aboutOpenSourceLabel.setFont(utils.getFont(16))
+        self.aboutOpenSourceLabel.setFont(utils.get_font(16))
         self.aboutOpenSourceTextEdit.setMinimumHeight(240)
         if isDarkTheme():
             self.aboutOpenSourceTextEdit.setStyleSheet("background-color: #323232; color: white;")
-        self.aboutOpenSourceTextEdit.setFont(utils.getFont(10))
+        self.aboutOpenSourceTextEdit.setFont(utils.get_font(10))
         self.aboutOpenSourceTextEdit.setReadOnly(True)
         self.aboutOpenSourceTextEdit.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
-        self.aboutOpenSourceTextEdit.setPlainText(utils.openSourceLicense)
+        self.aboutOpenSourceTextEdit.setPlainText(utils.open_source_license)
         # Feedback
-        self.aboutFeedbackLabel.setFont(utils.getFont(16))
-        self.aboutFeedbackGithubIssueHyperlink.setFont(utils.getFont(12))
-        self.aboutFeedbackGithubPullRequestHyperlink.setFont(utils.getFont(12))
+        self.aboutFeedbackLabel.setFont(utils.get_font(16))
+        self.aboutFeedbackGithubIssueHyperlink.setFont(utils.get_font(12))
+        self.aboutFeedbackGithubPullRequestHyperlink.setFont(utils.get_font(12))

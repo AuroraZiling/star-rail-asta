@@ -2,9 +2,9 @@ from enum import Enum
 
 from qfluentwidgets import getIconColor, Theme, FluentIconBase
 
-from ..Utils import config_utils
+from ..Utils import tools
 
-utils = config_utils.ConfigUtils()
+utils = tools.Tools()
 
 
 class MyFluentIcon(FluentIconBase, Enum):
@@ -25,4 +25,4 @@ class MyFluentIcon(FluentIconBase, Enum):
         else:
             c = "white" if theme == Theme.DARK else "black"
 
-        return f'{utils.workingDir}/assets/icons/{self.value}_{c}.svg'
+        return f'{utils.working_dir}/assets/icons/{self.value}_{c}.svg'
