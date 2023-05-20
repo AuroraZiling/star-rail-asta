@@ -181,7 +181,10 @@ class Tools:
         :return: The text in the clipboard
         """
         win32clipboard.OpenClipboard()
-        return win32clipboard.GetClipboardData(win32clipboard.CF_UNICODETEXT)
+        try:
+            return win32clipboard.GetClipboardData(win32clipboard.CF_UNICODETEXT)
+        except TypeError:
+            return ""
 
     def update_metadata(self, data_type: str, data=None) -> None:
         """Update the metadata

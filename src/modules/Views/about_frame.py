@@ -3,7 +3,7 @@ import logging
 from PySide6 import QtGui, QtWidgets
 from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout
 
-from qfluentwidgets import HyperlinkCard, isDarkTheme, TextEdit
+from qfluentwidgets import HyperlinkCard, isDarkTheme, TextEdit, FluentIcon
 
 from ..Scripts.UI import custom_icon
 from ..Scripts.UI.style_sheet import StyleSheet
@@ -62,6 +62,13 @@ class AboutWidget(QFrame):
 
         self.aboutFeedbackVBox = QVBoxLayout(self)
         self.aboutFeedbackLabel = QLabel("反馈", self)
+        self.aboutFeedbackDocumentHyperlink = HyperlinkCard(
+            url='https://theimaginary.netlify.app/asta',
+            text="访问",
+            parent=self,
+            icon=FluentIcon.GLOBE,
+            title="The Imaginary 文档"
+        )
         self.aboutFeedbackGithubIssueHyperlink = HyperlinkCard(
             url='https://github.com/AuroraZiling/asta/issues',
             text="提交",
@@ -77,6 +84,7 @@ class AboutWidget(QFrame):
             title="Github Pull Request"
         )
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackLabel)
+        self.aboutFeedbackVBox.addWidget(self.aboutFeedbackDocumentHyperlink)
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackGithubIssueHyperlink)
         self.aboutFeedbackVBox.addWidget(self.aboutFeedbackGithubPullRequestHyperlink)
         self.aboutVBox.addLayout(self.aboutFeedbackVBox)
@@ -129,5 +137,6 @@ class AboutWidget(QFrame):
         self.aboutOpenSourceTextEdit.setPlainText(utils.open_source_license)
         # Feedback
         self.aboutFeedbackLabel.setFont(utils.get_font(16))
+        self.aboutFeedbackDocumentHyperlink.setFont(utils.get_font(12))
         self.aboutFeedbackGithubIssueHyperlink.setFont(utils.get_font(12))
         self.aboutFeedbackGithubPullRequestHyperlink.setFont(utils.get_font(12))

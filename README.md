@@ -38,15 +38,29 @@ https://sangonomiya.coding.net/public-artifacts/asta/release/packages
 
 https://github.com/AuroraZiling/asta/releases
 
+## 文档 / Documentation
+
+https://theimaginary.netlify.app/asta/
+
 ## 卸载 / Uninstall
 
 程序所在文件夹，即`asta.exe`所在的文件夹
+
+## 部分功能展示 / Screenshots
+
+![image](https://raw.githubusercontent.com/AuroraZiling/asta.Metadata/main/pictures/show_1.webp)
+
+![image](https://raw.githubusercontent.com/AuroraZiling/asta.Metadata/main/pictures/show_2.webp)
+
+![image](https://raw.githubusercontent.com/AuroraZiling/asta.Metadata/main/pictures/show_3.webp)
 
 ## 已实现功能 / Implemented Features
 
 - [x] 图表显示
 - [x] 基础的数据分析
 - [x] 多UID支持
+- [x] 当期UP池显示
+- [x] 游戏内公告显示
 
 ## 维护者 / Maintainer
 

@@ -46,7 +46,7 @@ class GachaReportThread(QThread):
                     page += 1
                     self.usleep(500)
                 else:
-                    self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开祈愿记录的时间间隔在一天以内"))
+                    self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开跃迁记录的时间间隔在一天以内"))
                     return
         pathlib.Path(f"{utils.working_dir}/data/{self.uid}").mkdir(parents=True, exist_ok=True)
         UIGFExportJsonData["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())

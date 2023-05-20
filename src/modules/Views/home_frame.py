@@ -31,9 +31,6 @@ class HomeWidget(QFrame):
         self.baseVBox.addLayout(self.topHBox)
 
         self.currentUPTitleLabel = QLabel("当期UP信息", self)
-        self.currentUPCharacterLabel = QLabel("暂无", self)
-
-        self.currentUPTitleLabel = QLabel("当期UP信息", self)
 
         self.currentUP1Box = QHBoxLayout(self)
         self.currentUP1RightBox = QVBoxLayout(self)

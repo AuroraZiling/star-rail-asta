@@ -45,6 +45,8 @@ class URLDialog(MaskDialogBase, Ui_MessageBox):
         clipboardText = gacha_report_utils.extractAPI(utils.get_clipboard_text())
         if clipboardText:
             self.textEditWidget.setText(clipboardText)
+        else:
+            self.textEditWidget.setPlaceholderText("剪贴板中没有抽卡记录")
 
     def __yesButtonClicked(self):
         self.accept()

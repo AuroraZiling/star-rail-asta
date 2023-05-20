@@ -15,7 +15,8 @@ def getURL(gameDataPath):
     if not os.path.exists(str(webCacheData)):
         return None
     CopyFile(str(webCacheData), str(webCacheDataTmp))
-    results = [extractAPI(result) for result in [result.split(b"\x00")[0].decode(errors="ignore") for result in webCacheDataTmp.read_bytes().split(b"1/0/")]]
+    results = [extractAPI(result) for result in [result.split(b"\x00")[0].decode(errors="ignore") for result in
+                                                 webCacheDataTmp.read_bytes().split(b"1/0/")]]
     results = [result for result in results if result]
 
     if results:
@@ -23,6 +24,5 @@ def getURL(gameDataPath):
 
     if webCacheDataTmp.is_file():
         webCacheDataTmp.unlink()
-
 
     return url

@@ -167,13 +167,13 @@ class GachaReportWidget(QFrame):
             InfoBar.error("失败", "无法从游戏缓存中获取请求", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __headerRightFullUpdateDropBtnURL(self):
-        w = URLDialog("输入URL", "请在下方输入MiHoYoAPI的URL", self)
+        w = URLDialog("输入URL", "请在下方输入 MiHoYo API 的URL", self)
         w.returnSignal.connect(self.__headerRightFullUpdateDropBtnURLReturnSignal)
         w.exec()
 
     def __headerRightFullUpdateDropBtnURLReturnSignal(self, gachaURL: str):
-        gachaURL = gachaURL.split("game_biz=hk4e_cn")[0] + "game_biz=hk4e_cn"
         if gachaURL:
+            gachaURL = gachaURL.split("game_biz=hk4e_cn")[0] + "game_biz=hk4e_cn"
             self.headerRightFullUpdateDropBtn.setEnabled(False)
             self.gachaReportThread = GachaReportThread(gachaURL)
             self.gachaReportThreadStateTooltip = StateToolTip("更新数据中", "数据更新开始", self)
@@ -266,7 +266,7 @@ class GachaReportWidget(QFrame):
 
     def analysisUpdateData(self, currentData):
         analyzer = analysis.Analysis(currentData)
-        self.bottomRightBasicTotalLabel.setText(f"祈愿次数: {analyzer.get_total_amount_to_string()}")
+        self.bottomRightBasicTotalLabel.setText(f"跃迁次数: {analyzer.get_total_amount_to_string()}")
         self.bottomRightBasicLevel5TotalLabel.setText(
             f"5星数量: {analyzer.get_star_5_amount_to_string()} ({analyzer.get_star_5_percent_to_string()})")
         self.bottomRightBasicLevel5TotalTextEdit.setText(analyzer.get_star_5_to_string())
