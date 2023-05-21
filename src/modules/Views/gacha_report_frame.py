@@ -1,5 +1,6 @@
 import logging
 
+import requests
 from PySide6 import QtGui
 from PySide6.QtCharts import QChartView
 from PySide6.QtCore import Qt, QModelIndex
@@ -168,10 +169,13 @@ class GachaReportWidget(QFrame):
 
     def __headerRightFullUpdateDropBtnURL(self):
         w = URLDialog("输入URL", "请在下方输入 MiHoYo API 的URL", self)
-        w.returnSignal.connect(self.__headerRightFullUpdateDropBtnURLReturnSignal)
         w.exec()
-
-    def __headerRightFullUpdateDropBtnURLReturnSignal(self, gachaURL: str):
+        gachaURL = w.textEditWidget.toPlainText()
+        try:
+            requests.get(gachaURL)
+        except requests.exceptions.MissingSchema:
+            InfoBar.error("错误", "URL格式错误", InfoBarPosition.TOP_RIGHT, parent=self)
+            return
         if gachaURL:
             gachaURL = gachaURL.split("game_biz=hk4e_cn")[0] + "game_biz=hk4e_cn"
             self.headerRightFullUpdateDropBtn.setEnabled(False)
@@ -182,6 +186,7 @@ class GachaReportWidget(QFrame):
             self.gachaReportThreadStateTooltip.show()
             self.gachaReportThread.start()
             self.gachaReportThread.trigger.connect(self.gachaReportStatusChanged)
+
 
     def initHeaderRightFullUpdateDropBtnActions(self):
         self.headerRightFullUpdateDropBtnWebCacheAction.triggered.connect(self.__headerRightFullUpdateDropBtnWebCache)

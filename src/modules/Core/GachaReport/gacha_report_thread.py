@@ -44,7 +44,7 @@ class GachaReportThread(QThread):
                         gachaList.append(originalToUIGFListUnit(i, UIGF_GACHATYPE[GACHATYPE[key]]))
                     end_id = responsePerUnit["data"]["list"][-1]["id"]
                     page += 1
-                    self.usleep(500)
+                    self.msleep(500)
                 else:
                     self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开跃迁记录的时间间隔在一天以内"))
                     return

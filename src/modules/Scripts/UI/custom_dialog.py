@@ -14,9 +14,6 @@ utils = Tools()
 
 
 class URLDialog(MaskDialogBase, Ui_MessageBox):
-    """ Message box """
-
-    returnSignal = Signal(str)
     cancelSignal = Signal()
 
     def __init__(self, title: str, content: str, parent=None):
@@ -50,7 +47,6 @@ class URLDialog(MaskDialogBase, Ui_MessageBox):
 
     def __yesButtonClicked(self):
         self.accept()
-        self.returnSignal.emit(self.textEditWidget.toPlainText())
 
 
 class ComboboxDialog(MaskDialogBase, Ui_MessageBox):
