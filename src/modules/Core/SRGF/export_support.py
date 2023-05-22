@@ -15,7 +15,6 @@ class ExportSupport:
 
     def SRGFSave(self, dst):
         data = pickle.load(open(self.dataPath, 'rb'))
-        data["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         data["info"]["export_timestamp"] = int(round(time.time() * 1000))
         data["info"]["export_app"] = "asta"
         data["info"]["export_app_version"] = utils.app_version

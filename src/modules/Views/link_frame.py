@@ -117,18 +117,16 @@ class LinkWidget(ScrollArea):
             importFile = json.loads(open(filePath, 'r', encoding="utf-8").read())
             tmp_uid = importFile["info"]["uid"]
             tmp_language = importFile["info"]["lang"]
-            tmp_export_time = importFile["info"].get("export_time", "Unknown")
             tmp_export_application = importFile["info"]["export_app"]
             tmp_application_version = importFile["info"]["export_app_version"]
             tmp_time_region_zome = importFile["info"]["region_time_zone"]
             alertMessage = f'''UID: {tmp_uid}
 语言: {tmp_language}
-导出时间: {tmp_export_time}  
 导出应用: {tmp_export_application}
 导出应用版本: {tmp_application_version}
 时区: {tmp_time_region_zome}'''
             self.__showTextEditMessageBox("验证", "请验证如下信息:", alertMessage)
-            importSupport = ImportSupport(tmp_uid, tmp_language, tmp_export_time)
+            importSupport = ImportSupport(tmp_uid, tmp_language)
             importSupport.SRGFSave(importFile)
             logging.info(f"[Link][Import] Imported ({tmp_uid} from {tmp_export_application})")
 

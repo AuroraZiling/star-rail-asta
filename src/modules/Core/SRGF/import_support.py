@@ -10,15 +10,13 @@ utils = tools.Tools()
 
 
 class ImportSupport:
-    def __init__(self, UID, language, export_time):
+    def __init__(self, UID, language):
         self.uid = UID
         self.language = language
-        self.export_time = export_time
 
         self.SRGFImportJsonData = SRGF_DATA_MODEL
 
     def SRGFSave(self, srgfDataList):
-        self.SRGFImportJsonData["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         self.SRGFImportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
         self.SRGFImportJsonData["info"]["export_app"] = "asta"
         self.SRGFImportJsonData["info"]["region_time_zone"] = srgfDataList["info"]["region_time_zone"]
