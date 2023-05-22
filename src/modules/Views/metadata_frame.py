@@ -6,7 +6,7 @@ from qfluentwidgets import SwitchSettingCard, PushSettingCard, InfoBar, InfoBarP
 from qfluentwidgets import FluentIcon
 
 from ..config import cfg
-from .ViewFunctions.metadata_functions import MetadataUpdateThread, MetadataUIGFUpdateThread
+from .ViewFunctions.metadata_functions import MetadataUpdateThread, MetadataSRGFUpdateThread
 from ..Scripts.Utils import tools
 from ..Scripts.UI.style_sheet import StyleSheet
 
@@ -45,15 +45,15 @@ class MetaDataWidget(QFrame):
 
         self.metaDataUpdateProgressBar = IndeterminateProgressBar(self)
 
-        self.metaDataUIGFUpdateCard = PushSettingCard(
+        self.metaDataSRGFUpdateCard = PushSettingCard(
             "更新",
             FluentIcon.UPDATE,
-            "更新UIGF API数据",
+            "更新SRGF API数据",
             "",
             parent=self
         )
 
-        self.metaDataUIGFUpdateProgressBar = IndeterminateProgressBar(self)
+        self.metaDataSRGFUpdateProgressBar = IndeterminateProgressBar(self)
 
         self.baseVBox.addWidget(self.metaDataTitleLabel)
         self.baseVBox.addWidget(self.metaDataSubTitleLabel)
@@ -62,8 +62,8 @@ class MetaDataWidget(QFrame):
         self.baseVBox.addWidget(self.metaDataCharacterWeaponUpdateLabel)
         self.baseVBox.addWidget(self.metaDataUpdateCard)
         self.baseVBox.addWidget(self.metaDataUpdateProgressBar)
-        self.baseVBox.addWidget(self.metaDataUIGFUpdateCard)
-        self.baseVBox.addWidget(self.metaDataUIGFUpdateProgressBar)
+        self.baseVBox.addWidget(self.metaDataSRGFUpdateCard)
+        self.baseVBox.addWidget(self.metaDataSRGFUpdateProgressBar)
         self.baseVBox.addStretch(1)
 
         self.setObjectName("MetaDataWidget")
@@ -74,7 +74,7 @@ class MetaDataWidget(QFrame):
 
     def closeEvent(self, event):
         self.metaDataUpdateThread.exit()
-        self.metaDataUIGFUpdateThread.exit()
+        self.metaDataSRGFUpdateThread.exit()
         event.accept()
 
     def __metaDataUpdateCardSignal(self, status):
@@ -91,19 +91,19 @@ class MetaDataWidget(QFrame):
         self.metaDataUpdateThread.start()
         self.metaDataUpdateThread.trigger.connect(self.__metaDataUpdateCardSignal)
 
-    def __metaDataUIGFUpdateCardSignal(self, status):
-        message = "UIGF API 数据已更新" if status else "UIGF API 数据无需更新"
-        self.metaDataUIGFUpdateCard.setEnabled(True)
-        self.metaDataUIGFUpdateProgressBar.setVisible(False)
+    def __metaDataSRGFUpdateCardSignal(self, status):
+        message = "SRGF API 数据已更新" if status else "SRGF API 数据无需更新"
+        self.metaDataSRGFUpdateCard.setEnabled(True)
+        self.metaDataSRGFUpdateProgressBar.setVisible(False)
         InfoBar.success("成功", message, position=InfoBarPosition.TOP_RIGHT, parent=self)
-        logging.info(f"[Metadata] UIGF metadata updated")
+        logging.info(f"[Metadata] SRGF metadata updated")
 
-    def __metaDataUIGFUpdateCardClicked(self):
-        self.metaDataUIGFUpdateCard.setEnabled(False)
-        self.metaDataUIGFUpdateProgressBar.setVisible(True)
-        self.metaDataUIGFUpdateThread = MetadataUIGFUpdateThread()
-        self.metaDataUIGFUpdateThread.start()
-        self.metaDataUIGFUpdateThread.trigger.connect(self.__metaDataUIGFUpdateCardSignal)
+    def __metaDataSRGFUpdateCardClicked(self):
+        self.metaDataSRGFUpdateCard.setEnabled(False)
+        self.metaDataSRGFUpdateProgressBar.setVisible(True)
+        self.metaDataSRGFUpdateThread = MetadataSRGFUpdateThread()
+        self.metaDataSRGFUpdateThread.start()
+        self.metaDataSRGFUpdateThread.trigger.connect(self.__metaDataSRGFUpdateCardSignal)
 
     def initFrame(self):
         self.metaDataTitleLabel.setObjectName("metaDataTitleLabel")
@@ -112,12 +112,12 @@ class MetaDataWidget(QFrame):
         self.metaDataCharacterWeaponUpdateLabel.setFont(utils.get_font(18))
 
         self.metaDataUpdateProgressBar.setVisible(False)
-        self.metaDataUIGFUpdateProgressBar.setVisible(False)
+        self.metaDataSRGFUpdateProgressBar.setVisible(False)
 
         self.metaDataUpdateCard.clicked.connect(self.__metaDataUpdateCardClicked)
 
-        self.metaDataUIGFUpdateCard.clicked.connect(self.__metaDataUIGFUpdateCardClicked)
+        self.metaDataSRGFUpdateCard.clicked.connect(self.__metaDataSRGFUpdateCardClicked)
 
         if cfg.metaDataUpdateAtStartUp.value:
             self.__metaDataUpdateCardClicked()
-            self.__metaDataUIGFUpdateCardClicked()
+            self.__metaDataSRGFUpdateCardClicked()

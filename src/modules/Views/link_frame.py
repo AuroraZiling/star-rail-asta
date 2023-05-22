@@ -12,8 +12,8 @@ from ..Core.GachaReport import gacha_report_read
 from ..Scripts.UI import custom_msgBox, custom_dialog
 from ..Scripts.UI.style_sheet import StyleSheet
 from ..Scripts.Utils import tools
-from ..Core.UIGF.import_support import ImportSupport
-from ..Core.UIGF.export_support import ExportSupport
+from ..Core.SRGF.import_support import ImportSupport
+from ..Core.SRGF.export_support import ExportSupport
 
 utils = tools.Tools()
 
@@ -25,15 +25,15 @@ class LinkWidget(ScrollArea):
         super().__init__(parent=parent)
         self.scrollWidget = QWidget()
         self.expandLayout = ExpandLayout(self.scrollWidget)
-        self.linkLabel = QLabel("UIGF 导入和导出", self)
+        self.linkLabel = QLabel("SRGF 导入和导出", self)
 
         # Import
         self.importGroup = SettingCardGroup("导入", self.scrollWidget)
         self.importCard = PushSettingCard(
             "浏览",
             FluentIcon.EMBED,
-            "导入 UIGF(Json) 文件",
-            "目前支持的标准: Uniformed Interchangeable GachaLog Format standard v2.2",
+            "导入 SRGF(Json) 文件",
+            "目前支持的标准: Star Rail GachaLog Format standard (SRGF) v1.0",
             self.importGroup
         )
 
@@ -42,20 +42,20 @@ class LinkWidget(ScrollArea):
         self.exportCard = PushSettingCard(
             "浏览",
             FluentIcon.SHARE,
-            "导出 Json 文件",
-            "目前不支持UIGF标准",
+            "导出 SRGF(Json) 文件",
+            "目前支持的标准: Star Rail GachaLog Format standard (SRGF) v1.0",
             self.exportGroup
         )
 
-        # AboutUIGF
-        self.uigfGroup = SettingCardGroup("关于 UIGF", self.scrollWidget)
-        self.uigfCard = HyperlinkCard(
-            f"https://uigf.org/zh/",
-            "打开 UIGF 官网",
+        # AboutSRGF
+        self.srgfGroup = SettingCardGroup("关于 SRGF", self.scrollWidget)
+        self.srgfCard = HyperlinkCard(
+            f"https://srgf.org/zh/",
+            "打开 SRGF 官网",
             FluentIcon.HELP,
-            "什么是UIGF?",
+            "什么是SRGF?",
             "Unified Standardized GenshinData Format",
-            self.uigfGroup
+            self.srgfGroup
         )
 
         self.setObjectName("LinkFrame")
@@ -82,21 +82,19 @@ class LinkWidget(ScrollArea):
 
         # Import
         self.importGroup.addSettingCard(self.importCard)
-        self.importCard.setEnabled(False)
 
         # Export
         self.exportGroup.addSettingCard(self.exportCard)
 
-        # About UIGF
-        self.uigfGroup.addSettingCard(self.uigfCard)
-        self.uigfCard.setEnabled(False)
+        # About SRGF
+        self.srgfGroup.addSettingCard(self.srgfCard)
 
         # Add Cards
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(60, 10, 60, 0)
         self.expandLayout.addWidget(self.importGroup)
         self.expandLayout.addWidget(self.exportGroup)
-        self.expandLayout.addWidget(self.uigfGroup)
+        self.expandLayout.addWidget(self.srgfGroup)
 
     def __setQss(self):
         """ set style sheet """
@@ -112,31 +110,33 @@ class LinkWidget(ScrollArea):
         custom_msgBox.TextEditMsgBox(title, content, text, self).exec()
 
     def __importCardClicked(self):
-        filePath = QFileDialog.getOpenFileName(self, "打开 UIGF(Json) 文件", "./", "UIGF(json) File (*.json)")[0]
-        logging.info(f"[Link][Import] Get UIGF File: {filePath}")
-        if utils.json_validator(filePath, "uigf"):
-            logging.info(f"[Sangonomiya][Link] UIGF Import File Path: {filePath}")
+        filePath = QFileDialog.getOpenFileName(self, "打开 SRGF(Json) 文件", "./", "SRGF(json) File (*.json)")[0]
+        logging.info(f"[Link][Import] Get SRGF File: {filePath}")
+        if utils.json_validator(filePath, "srgf"):
+            logging.info(f"[Sangonomiya][Link] SRGF Import File Path: {filePath}")
             importFile = json.loads(open(filePath, 'r', encoding="utf-8").read())
             tmp_uid = importFile["info"]["uid"]
             tmp_language = importFile["info"]["lang"]
             tmp_export_time = importFile["info"].get("export_time", "Unknown")
             tmp_export_application = importFile["info"]["export_app"]
             tmp_application_version = importFile["info"]["export_app_version"]
+            tmp_time_region_zome = importFile["info"]["region_time_zone"]
             alertMessage = f'''UID: {tmp_uid}
 语言: {tmp_language}
 导出时间: {tmp_export_time}  
 导出应用: {tmp_export_application}
-导出应用版本: {tmp_application_version}'''
+导出应用版本: {tmp_application_version}
+时区: {tmp_time_region_zome}'''
             self.__showTextEditMessageBox("验证", "请验证如下信息:", alertMessage)
             importSupport = ImportSupport(tmp_uid, tmp_language, tmp_export_time)
-            importSupport.UIGFSave(importFile)
+            importSupport.SRGFSave(importFile)
             logging.info(f"[Link][Import] Imported ({tmp_uid} from {tmp_export_application})")
 
     def __exportCardReturnSignal(self, uid):
-        filePath = QFileDialog.getSaveFileName(self, "保存 UIGF(Json) 文件", f"./{uid}_export_data.json",
-                                               "UIGF(json) File (*.json)")[0]
+        filePath = QFileDialog.getSaveFileName(self, "保存 SRGF(Json) 文件", f"./{uid}_export_data.json",
+                                               "SRGF(json) File (*.json)")[0]
         exportSupport = ExportSupport(uid)
-        exportSupport.UIGFSave(filePath)
+        exportSupport.SRGFSave(filePath)
         logging.info(f"[Link][Export] Exported ({uid} to {filePath})")
 
     def __exportCardClicked(self):

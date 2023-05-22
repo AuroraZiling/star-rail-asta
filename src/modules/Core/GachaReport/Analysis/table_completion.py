@@ -6,7 +6,7 @@ utils = tools.Tools()
 
 def originalTableDataToComplete(data):
     permanentList = utils.read_metadata("permanent")
-    for eachData in ["1", "11", "12"]:
+    for eachData in ["1", "2", "11", "12"]:
         currentData = data[eachData]
         guaranteeCounter = 0
         for index, unit in enumerate(currentData):

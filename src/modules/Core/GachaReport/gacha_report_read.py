@@ -31,8 +31,8 @@ def sortDataByTime(data):
 
 
 def convertDataToTable(data):
-    categories = {"1": [], "11": [], "12": []}
-    copied_categories = {"1": [], "11": [], "12": []}
+    categories = {"1": [], "2": [], "11": [], "12": []}
+    copied_categories = {"1": [], "2": [], "11": [], "12": []}
     for unit in data["list"]:
         eachUnit = {
             "item_type": unit["item_type"],
@@ -40,10 +40,11 @@ def convertDataToTable(data):
             "time": unit["time"],
             "rank_type": unit["rank_type"]
         }
-        categories[unit["uigf_gacha_type"]].append(eachUnit)
+        categories[unit["gacha_type"]].append(eachUnit)
         eachUnit.update({"timestamp": time.mktime(time.strptime(unit["time"], "%Y-%m-%d %H:%M:%S"))})
-        copied_categories[unit["uigf_gacha_type"]].append(eachUnit)
+        copied_categories[unit["gacha_type"]].append(eachUnit)
     categories["1"] = sortDataByTime(copied_categories["1"])
+    categories["2"] = sortDataByTime(copied_categories["2"])
     categories["11"] = sortDataByTime(copied_categories["11"])
     categories["12"] = sortDataByTime(copied_categories["12"])
     return categories

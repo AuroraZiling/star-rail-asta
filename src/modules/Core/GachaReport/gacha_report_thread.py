@@ -6,8 +6,8 @@ import requests
 
 from PySide6.QtCore import QThread, Signal
 
-from ...constant import UIGF_VERSION, UIGF_DATA_MODEL, GACHATYPE, UIGF_GACHATYPE
-from ..UIGF.converter import originalToUIGFListUnit
+from ...constant import SRGF_VERSION, SRGF_DATA_MODEL, GACHATYPE, SRGF_GACHATYPE
+from ..SRGF.converter import originalToSRGFListUnit
 from .gacha_report_utils import updateAPI
 from ...Scripts.Utils.tools import Tools
 
@@ -21,16 +21,15 @@ class GachaReportThread(QThread):
     def __init__(self, gachaUrl, parent=None):
         super(GachaReportThread, self).__init__(parent)
         self.uid = ""
+        self.region_time_zone = ""
         self.gachaUrl = gachaUrl
 
     def run(self):
-        UIGFExportJsonData = UIGF_DATA_MODEL
+        SRGFExportJsonData = SRGF_DATA_MODEL
         gachaList = []
         for key in GACHATYPE.keys():
             end_id = "0"
             page = 0
-            if key == "始发跃迁":
-                continue
             while True:
                 apiPerUnit = updateAPI(self.gachaUrl, GACHATYPE[key], 20, page, end_id)
                 responsePerUnit = json.loads(requests.get(apiPerUnit).content.decode("utf-8"))
@@ -39,25 +38,27 @@ class GachaReportThread(QThread):
                     if not len(gachaPerResponse):
                         break
                     self.uid = responsePerUnit['data']["list"][0]['uid']
+                    self.region_time_zone = str(responsePerUnit['data']["region_time_zone"])
                     self.trigger.emit((0, f"正在获取第{str(page + 1)}页 | {key}", self.uid))
                     for i in gachaPerResponse:
-                        gachaList.append(originalToUIGFListUnit(i, UIGF_GACHATYPE[GACHATYPE[key]]))
+                        gachaList.append(originalToSRGFListUnit(i))
                     end_id = responsePerUnit["data"]["list"][-1]["id"]
                     page += 1
-                    self.msleep(500)
+                    self.msleep(300)
                 else:
                     self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开跃迁记录的时间间隔在一天以内"))
                     return
         pathlib.Path(f"{utils.working_dir}/data/{self.uid}").mkdir(parents=True, exist_ok=True)
-        UIGFExportJsonData["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        UIGFExportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
-        UIGFExportJsonData["info"]["export_app"] = "asta"
-        UIGFExportJsonData["info"]["export_app_version"] = utils.app_version
-        UIGFExportJsonData["info"]["uigf_version"] = UIGF_VERSION
-        UIGFExportJsonData['info']['uid'] = self.uid
-        UIGFExportJsonData["list"] = gachaList
+        SRGFExportJsonData["info"]["export_time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        SRGFExportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
+        SRGFExportJsonData["info"]["export_app"] = "asta"
+        SRGFExportJsonData["info"]["export_app_version"] = utils.app_version
+        SRGFExportJsonData["info"]["srgf_version"] = SRGF_VERSION
+        SRGFExportJsonData["info"]["region_time_zone"] = self.region_time_zone
+        SRGFExportJsonData['info']['uid'] = self.uid
+        SRGFExportJsonData["list"] = gachaList
         open(f"{utils.working_dir}/data/{self.uid}/{self.uid}_export_data.json", "w", encoding="utf-8").write(
-            json.dumps(UIGFExportJsonData, indent=2, sort_keys=True, ensure_ascii=False))
+            json.dumps(SRGFExportJsonData, indent=2, sort_keys=True, ensure_ascii=False))
         with open(f"{utils.working_dir}/data/{self.uid}/{self.uid}_data.pickle", 'wb') as f:
-            pickle.dump(UIGFExportJsonData, f)
+            pickle.dump(SRGFExportJsonData, f)
         self.trigger.emit((1, "跃迁记录更新完毕", self.uid))

@@ -220,7 +220,7 @@ class GachaReportWidget(QFrame):
     def initFrame(self):
         self.headerLeftGachaReportTitleLabel.setFont(utils.get_font(18))
         self.headerRightGachaTypeCombobox.setFixedWidth(160)
-        self.headerRightGachaTypeCombobox.addItems(["角色活动跃迁", "光锥活动跃迁", "群星跃迁"])
+        self.headerRightGachaTypeCombobox.addItems(["角色活动跃迁", "光锥活动跃迁", "群星跃迁", "始发跃迁"])
         self.headerRightGachaTypeCombobox.setEnabled(False)
         self.headerRightGachaTypeCombobox.currentIndexChanged.connect(self.__headerRightGachaTypeComboboxChanged)
         self.headerRightUIDSelectCombobox.setFixedWidth(160)

@@ -25,6 +25,9 @@ class Tools:
         self.license = self.__get_license()
         self.open_source_license = self.__get_open_source_license()
 
+        if not os.path.exists(self.log_dir):
+            os.mkdir(self.log_dir)
+
         logFileName = "Asta " + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + ".log"
         logging.basicConfig(
             level=logging.DEBUG,
@@ -198,6 +201,8 @@ class Tools:
             data = weapon_list.categoryWeaponInStar()
         elif data_type == "permanent" and not data:
             data = character_list.getPermanentCharacter()
+        if not os.path.exists(self.config_dir):
+            os.mkdir(self.config_dir)
         if not os.path.exists(f"{self.config_dir}/metadata/"):
             os.mkdir(f"{self.config_dir}/metadata/")
         open(f"{self.config_dir}/metadata/{data_type}.json", 'w', encoding="utf-8").write(
@@ -215,8 +220,8 @@ class Tools:
             return False
         try:
             file = json.loads(open(path, 'r', encoding="utf-8").read())
-            if requirement == "uigf":
-                if not file["info"]["uigf_version"] == "v2.2":
+            if requirement == "srgf":
+                if not file["info"]["srgf_version"] == "v1.0":
                     return False
         except json.decoder.JSONDecodeError:
             return False

@@ -138,7 +138,7 @@ class Window(FramelessWindow):
         self.mainNavigationInterface.addItem(
             routeKey=self.mainLinkInterface.objectName(),
             icon=custom_icon.MyFluentIcon.DATA,
-            text="UIGF",
+            text="SRGF",
             onClick=lambda: self.switchTo(self.mainLinkInterface)
         )
 
