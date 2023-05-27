@@ -1,7 +1,7 @@
 # coding: utf-8
 from enum import Enum
 from ..Utils.tools import Tools
-from qfluentwidgets import StyleSheetBase, Theme, qconfig
+from qfluentwidgets import StyleSheetBase, Theme, qconfig, isDarkTheme
 
 utils = Tools()
 
@@ -24,3 +24,10 @@ class StyleSheet(StyleSheetBase, Enum):
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme
         return f"{utils.working_dir}/assets/themes/{theme.value.lower()}/{theme.value.lower()}_{self.value}.qss"
+
+
+def component_style_sheet(component):
+    theme = "dark" if isDarkTheme() else "light"
+    with open(f"{utils.working_dir}/assets/themes/{theme}/components/{component}.qss",
+              encoding='utf-8') as f:
+        return f.read()

@@ -1,0 +1,13 @@
+PushButton#complete_analysis {
+    color: rgba(205, 133, 63, 1);
+    font: 14px;
+    background-color: transparent;
+}
+
+PushButton:hover#complete_analysis {
+    color: rgba(205, 133, 63, 0.9);
+}
+
+PushButton:pressed#complete_analysis {
+    color: rgba(205, 133, 63, 0.7);
+}

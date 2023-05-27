@@ -9,9 +9,11 @@ from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QAbstrac
     QTableWidgetItem, QStyleOptionViewItem
 
 from qfluentwidgets import FluentIcon, RoundMenu, TableWidget, TextEdit, MessageBox, InfoBarPosition, ComboBox, \
-    Action, InfoBar, StateToolTip, TableItemDelegate, isDarkTheme
+    Action, InfoBar, StateToolTip, TableItemDelegate, isDarkTheme, PushButton
 from qfluentwidgets import DropDownPushButton
+from qfluentwidgets.common.style_sheet import styleSheetManager
 
+from ..Scripts.UI import style_sheet
 from ..config import cfg
 from ..Scripts.Utils import tools
 from ..Core.GachaReport.gacha_report_thread import GachaReportThread
@@ -80,20 +82,33 @@ class GachaReportWidget(QFrame):
         self.bottomRightVBox = QVBoxLayout()
         self.bottomRightBasicLabel = QLabel("基本数据")
         self.bottomRightBasicTotalLabel = QLabel("未知抽数")
-        self.bottomRightBasicLevel5TotalLabel = QLabel("未知5星数量")
-        self.bottomRightBasicLevel5TotalTextEdit = TextEdit()
-        self.bottomRightBasicLevel4TotalLabel = QLabel("未知4星数量")
-        self.bottomRightBasicLevel3TotalLabel = QLabel("未知3星数量")
+
+        self.bottomRightBasicLevelHBox = QHBoxLayout(self)
+        self.bottomRightBasicLevel5TotalBtn = PushButton()
+        self.bottomRightBasicLevel4TotalBtn = PushButton()
+        self.bottomRightBasicLevel3TotalBtn = PushButton()
+        self.bottomRightBasicLevelHBox.addWidget(self.bottomRightBasicLevel5TotalBtn)
+        self.bottomRightBasicLevelHBox.addWidget(self.bottomRightBasicLevel4TotalBtn)
+        self.bottomRightBasicLevelHBox.addWidget(self.bottomRightBasicLevel3TotalBtn)
+
+        self.bottomRightBasicAverageHBox = QHBoxLayout(self)
+        self.bottomRightBasicAverage5TotalLabel = QLabel("5星平均出货")
+        self.bottomRightBasicAverage4TotalLabel = QLabel("4星平均出货")
+        self.bottomRightCompleteAnalysisBtn = PushButton()
+        self.bottomRightBasicAverageHBox.addWidget(self.bottomRightBasicAverage5TotalLabel)
+        self.bottomRightBasicAverageHBox.addWidget(self.bottomRightBasicAverage4TotalLabel)
+        self.bottomRightBasicAverageHBox.addWidget(self.bottomRightCompleteAnalysisBtn)
+
         self.bottomRightAnalysisLabel = QLabel("保底情况")
         self.bottomRightAnalysisGuaranteeLabel = QLabel("未知")
         self.bottomRightGraphLabel = QLabel("图像", self)
         self.bottomRightGraphView = QChartView(self)
         self.bottomRightVBox.addWidget(self.bottomRightBasicLabel)
         self.bottomRightVBox.addWidget(self.bottomRightBasicTotalLabel)
-        self.bottomRightVBox.addWidget(self.bottomRightBasicLevel5TotalLabel)
-        self.bottomRightVBox.addWidget(self.bottomRightBasicLevel5TotalTextEdit)
-        self.bottomRightVBox.addWidget(self.bottomRightBasicLevel4TotalLabel)
-        self.bottomRightVBox.addWidget(self.bottomRightBasicLevel3TotalLabel)
+        self.bottomRightVBox.addSpacing(20)
+        self.bottomRightVBox.addLayout(self.bottomRightBasicLevelHBox)
+        self.bottomRightVBox.addLayout(self.bottomRightBasicAverageHBox)
+        self.bottomRightVBox.addSpacing(20)
         self.bottomRightVBox.addWidget(self.bottomRightAnalysisLabel)
         self.bottomRightVBox.addWidget(self.bottomRightAnalysisGuaranteeLabel)
         self.bottomRightVBox.addWidget(self.bottomRightGraphLabel)
@@ -187,7 +202,6 @@ class GachaReportWidget(QFrame):
             self.gachaReportThread.start()
             self.gachaReportThread.trigger.connect(self.gachaReportStatusChanged)
 
-
     def initHeaderRightFullUpdateDropBtnActions(self):
         self.headerRightFullUpdateDropBtnWebCacheAction.triggered.connect(self.__headerRightFullUpdateDropBtnWebCache)
         self.headerRightFullUpdateDropBtnURLAction.triggered.connect(self.__headerRightFullUpdateDropBtnURL)
@@ -198,12 +212,10 @@ class GachaReportWidget(QFrame):
         self.bottomLeftGachaTable.setEnabled(mode)
         self.headerRightGachaTypeCombobox.setEnabled(mode)
         self.headerRightUIDSelectCombobox.setEnabled(mode)
-        self.bottomRightBasicLevel5TotalTextEdit.setEnabled(mode)
         self.bottomRightGraphLabel.setEnabled(mode)
 
     def emptyAllStatistics(self):
         self.bottomLeftGachaTable.clearContents()
-        self.bottomRightBasicLevel5TotalTextEdit.clear()
 
     def showEvent(self, a0: QtGui.QShowEvent) -> None:
         if not gacha_report_read.getUIDList():
@@ -228,7 +240,7 @@ class GachaReportWidget(QFrame):
         self.headerRightFullUpdateDropBtn.setFixedWidth(160)
         self.headerRightFullUpdateDropBtn.setMenu(self.headerRightFullUpdateDropBtnMenu)
 
-        self.bottomLeftGachaTable.setFixedWidth(620)
+        self.bottomLeftGachaTable.setFixedWidth(600)
         self.bottomLeftGachaTable.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.bottomLeftGachaTable.setColumnCount(6)
         self.bottomLeftGachaTable.verticalHeader().setHidden(True)
@@ -244,15 +256,41 @@ class GachaReportWidget(QFrame):
 
         self.bottomRightBasicLabel.setFont(utils.get_font(14))
         self.bottomRightBasicTotalLabel.setFont(utils.get_font(12))
-        self.bottomRightBasicLevel5TotalLabel.setFont(utils.get_font(10))
-        self.bottomRightBasicLevel4TotalLabel.setFont(utils.get_font(10))
-        self.bottomRightBasicLevel3TotalLabel.setFont(utils.get_font(10))
-        self.bottomRightBasicLevel5TotalTextEdit.setReadOnly(True)
+
+        self.bottomRightBasicLevel5TotalBtn.setText("5星数量")
+        self.bottomRightBasicLevel4TotalBtn.setText("4星数量")
+        self.bottomRightBasicLevel3TotalBtn.setText("3星数量")
+        styleSheetManager.deregister(self.bottomRightBasicLevel5TotalBtn)
+        styleSheetManager.deregister(self.bottomRightBasicLevel4TotalBtn)
+        styleSheetManager.deregister(self.bottomRightBasicLevel3TotalBtn)
+        self.bottomRightBasicLevel5TotalBtn.setObjectName("level_5")
+        self.bottomRightBasicLevel4TotalBtn.setObjectName("level_4")
+        self.bottomRightBasicLevel3TotalBtn.setObjectName("level_3")
+        self.bottomRightBasicLevel5TotalBtn.setStyleSheet(style_sheet.component_style_sheet("gacha_report_push_button_5"))
+        self.bottomRightBasicLevel4TotalBtn.setStyleSheet(style_sheet.component_style_sheet("gacha_report_push_button_4"))
+        self.bottomRightBasicLevel3TotalBtn.setStyleSheet(style_sheet.component_style_sheet("gacha_report_push_button_3"))
+
+        self.bottomRightBasicAverage5TotalLabel.setFont(utils.get_font(12))
+        self.bottomRightBasicAverage4TotalLabel.setFont(utils.get_font(12))
+        self.bottomRightBasicAverage5TotalLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.bottomRightBasicAverage4TotalLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        styleSheetManager.deregister(self.bottomRightBasicAverage5TotalLabel)
+        styleSheetManager.deregister(self.bottomRightBasicAverage4TotalLabel)
+        self.bottomRightBasicAverage5TotalLabel.setObjectName("level_5_average")
+        self.bottomRightBasicAverage4TotalLabel.setObjectName("level_4_average")
+        self.bottomRightBasicAverage5TotalLabel.setStyleSheet(
+            style_sheet.component_style_sheet("gacha_report_push_button_5"))
+        self.bottomRightBasicAverage4TotalLabel.setStyleSheet(
+            style_sheet.component_style_sheet("gacha_report_push_button_4"))
+
+        styleSheetManager.deregister(self.bottomRightCompleteAnalysisBtn)
+        self.bottomRightCompleteAnalysisBtn.setObjectName("complete_analysis")
+        self.bottomRightCompleteAnalysisBtn.setText("查看完整分析")
+        self.bottomRightCompleteAnalysisBtn.setStyleSheet(style_sheet.component_style_sheet("gacha_report_complete_analysis_button"))
 
         self.bottomRightAnalysisLabel.setFont(utils.get_font(14))
         self.bottomRightAnalysisGuaranteeLabel.setFont(utils.get_font(10))
         self.bottomRightGraphLabel.setFont(utils.get_font(14))
-        self.bottomRightGraphView.setFixedHeight(150)
         self.bottomRightGraphView.setRenderHint(QPainter.Antialiasing)
 
     def tableUpdateData(self, currentData):
@@ -272,12 +310,13 @@ class GachaReportWidget(QFrame):
     def analysisUpdateData(self, currentData):
         analyzer = analysis.Analysis(currentData)
         self.bottomRightBasicTotalLabel.setText(f"跃迁次数: {analyzer.get_total_amount_to_string()}")
-        self.bottomRightBasicLevel5TotalLabel.setText(
+        self.bottomRightBasicLevel5TotalBtn.setText(
             f"5星数量: {analyzer.get_star_5_amount_to_string()} ({analyzer.get_star_5_percent_to_string()})")
-        self.bottomRightBasicLevel5TotalTextEdit.setText(analyzer.get_star_5_to_string())
-        self.bottomRightBasicLevel4TotalLabel.setText(
+        self.bottomRightBasicLevel4TotalBtn.setText(
             f"4星数量: {analyzer.get_star_4_amount_to_string()} ({analyzer.get_star_4_percent_to_string()})")
-        self.bottomRightBasicLevel3TotalLabel.setText(f"3星数量: {analyzer.get_star_3_amount_to_string()}")
+        self.bottomRightBasicLevel3TotalBtn.setText(f"3星数量: {analyzer.get_star_3_amount_to_string()}")
+        self.bottomRightBasicAverage5TotalLabel.setText(f"5星平均出货: {analyzer.get_star_5_average_to_string()}")
+        self.bottomRightBasicAverage4TotalLabel.setText(f"4星平均出货: {analyzer.get_star_4_average_to_string()}")
         self.bottomRightAnalysisGuaranteeLabel.setText(
             analyzer.get_guarantee(self.headerRightGachaTypeCombobox.currentText()))
         self.bottomRightGraphView.setChart(analyzer.get_pie_chart())

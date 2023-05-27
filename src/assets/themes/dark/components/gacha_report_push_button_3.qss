@@ -1,0 +1,13 @@
+PushButton#level_3 {
+    color: rgba(30, 144, 255, 1);
+    font: 16px;
+    background-color: transparent;
+}
+
+PushButton:hover#level_3 {
+    color: rgba(30, 144, 255, 0.9);
+}
+
+PushButton:pressed#level_3 {
+    color: rgba(30, 144, 255, 0.7);
+}

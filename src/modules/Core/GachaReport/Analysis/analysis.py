@@ -68,6 +68,18 @@ class Analysis:
         else:
             return "0.00%"
 
+    def get_star_5_average_to_string(self):
+        if self.star_5_amount:
+            return f"{round(self.total_amount / self.star_5_amount, 2)}"
+        else:
+            return "0.00%"
+
+    def get_star_4_average_to_string(self):
+        if self.star_4_amount:
+            return f"{round(self.total_amount / self.star_4_amount, 2)}"
+        else:
+            return "0.00%"
+
     def get_guarantee(self, data_type):
         guarantee_text = ""
         nearest_5_star = {}
@@ -126,12 +138,11 @@ class Analysis:
         self.chart3Star.setValue(self.star_3_amount)
 
         self.chart.addSeries(self.chartSeries)
-        self.chart.setPlotArea(QRectF(0, 0, 500, 150))
         self.chart.setBackgroundVisible(False)
         self.chart.createDefaultAxes()
 
         self.chart.legend().setVisible(True)
-        self.chart.legend().setGeometry(QRectF(0, 0, 100, 100))
+        self.chart.legend().setGeometry(QRectF(0, 0, 200, 200))
         self.chart.legend().setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.chart.legend().setLabelColor(QColor(255, 255, 255) if isDarkTheme() else QColor(0, 0, 0))
 

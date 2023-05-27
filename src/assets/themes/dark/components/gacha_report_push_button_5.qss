@@ -1,0 +1,19 @@
+PushButton#level_5 {
+    color: rgba(255, 165, 0, 1);
+    font: 16px;
+    background-color: transparent;
+}
+
+PushButton:hover#level_5 {
+    color: rgba(255, 165, 0, 0.9);
+}
+
+PushButton:pressed#level_5 {
+    color: rgba(255, 165, 0, 0.7);
+}
+
+QLabel#level_5_average {
+    color: rgba(255, 165, 0, 1);
+    font: 14px;
+    background-color: transparent;
+}
