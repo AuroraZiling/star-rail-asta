@@ -1,3 +1,4 @@
+import datetime
 import json
 import pathlib
 import pickle
@@ -17,7 +18,7 @@ class ImportSupport:
         self.SRGFImportJsonData = SRGF_DATA_MODEL
 
     def SRGFSave(self, srgfDataList):
-        self.SRGFImportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
+        self.SRGFImportJsonData["info"]["export_timestamp"] = int(time.mktime(datetime.datetime.now().timetuple()))
         self.SRGFImportJsonData["info"]["export_app"] = "asta"
         self.SRGFImportJsonData["info"]["region_time_zone"] = srgfDataList["info"]["region_time_zone"]
         self.SRGFImportJsonData["info"]["export_app_version"] = utils.app_version

@@ -1,3 +1,4 @@
+import datetime
 import json
 import pathlib
 import pickle
@@ -49,7 +50,7 @@ class GachaReportThread(QThread):
                     self.trigger.emit((-1, f"数据获取失败", "请检查:\n你输入URL是否可用\n距离上一次在游戏内打开跃迁记录的时间间隔在一天以内"))
                     return
         pathlib.Path(f"{utils.working_dir}/data/{self.uid}").mkdir(parents=True, exist_ok=True)
-        SRGFExportJsonData["info"]["export_timestamp"] = int(round(time.time() * 1000))
+        SRGFExportJsonData["info"]["export_timestamp"] = int(time.mktime(datetime.datetime.now().timetuple()))
         SRGFExportJsonData["info"]["export_app"] = "asta"
         SRGFExportJsonData["info"]["export_app_version"] = utils.app_version
         SRGFExportJsonData["info"]["srgf_version"] = SRGF_VERSION

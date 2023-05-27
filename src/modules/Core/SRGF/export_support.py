@@ -1,3 +1,4 @@
+import datetime
 import json
 import pickle
 import time
@@ -15,7 +16,7 @@ class ExportSupport:
 
     def SRGFSave(self, dst):
         data = pickle.load(open(self.dataPath, 'rb'))
-        data["info"]["export_timestamp"] = int(round(time.time() * 1000))
+        data["info"]["export_timestamp"] = int(time.mktime(datetime.datetime.now().timetuple()))
         data["info"]["export_app"] = "asta"
         data["info"]["export_app_version"] = utils.app_version
         data["info"]["srgf_version"] = SRGF_VERSION
