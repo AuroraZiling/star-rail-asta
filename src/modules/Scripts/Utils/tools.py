@@ -6,10 +6,12 @@ import shutil
 import sys
 import time
 
+import jsonschema
 import win32clipboard
 from PySide6.QtGui import QFont
 
 from ...Metadata import character_list, weapon_list
+from ...constant import APP_VERSION, UI_VERSION, SRGF_JSON_SCHEMA
 
 
 class Tools:
@@ -19,8 +21,8 @@ class Tools:
         self.log_dir = self.working_dir + "/logs"
         self.config_dir = self.working_dir + "/configs"
 
-        self.app_version = self.__get_version("application_version")
-        self.ui_version = self.__get_version("ui_version")
+        self.app_version = APP_VERSION
+        self.ui_version = UI_VERSION
 
         self.license = self.__get_license()
         self.open_source_license = self.__get_open_source_license()
@@ -47,16 +49,6 @@ class Tools:
             return os.path.abspath(os.curdir).replace("\\", '/')
         elif sys.platform.startswith("darwin"):
             return os.path.dirname(sys.argv[0])
-
-    def __get_version(self, version_type: str) -> str:
-        """Get the version of the program
-        :param version_type: The type of the version
-        :return: The version of the program
-        """
-        if self.find_exist(f"{self.working_dir}/assets/configs/application.json"):
-            with open(f"{self.working_dir}/assets/configs/application.json", 'r') as f:
-                return json.load(f)[version_type]
-        return ""
 
     @staticmethod
     def __get_OS_name() -> str:
@@ -221,7 +213,10 @@ class Tools:
         try:
             file = json.loads(open(path, 'r', encoding="utf-8").read())
             if requirement == "srgf":
-                if not file["info"]["srgf_version"] == "v1.0":
+                try:
+                    jsonschema.validate(instance=file, schema=SRGF_JSON_SCHEMA)
+                    return True
+                except jsonschema.exceptions.ValidationError:
                     return False
         except json.decoder.JSONDecodeError:
             return False

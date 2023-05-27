@@ -10,7 +10,7 @@ from qfluentwidgets import (SettingCardGroup, PushSettingCard, ScrollArea, Expan
 from qfluentwidgets import FluentIcon, InfoBarPosition, qconfig
 
 from ..config import cfg
-from .ViewFunctions.settings_functions import UpdateThread, IsNeedUpdateThread, delete_all_cache
+from .ViewFunctions.settings_functions import UpdateThread, IsNeedUpdateThread, delete_all_cache, delete_all_log
 from ..Core.GachaReport import gacha_report_read
 from ..Core.GachaReport.gacha_report_utils import getDefaultGameDataPath
 from ..Scripts.UI import custom_icon, custom_dialog

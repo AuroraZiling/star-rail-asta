@@ -188,7 +188,7 @@ class Window(FramelessWindow):
         self.onCurrentInterfaceChanged(0)
 
     def initWindow(self):
-        self.setFixedSize(1200, 700)
+        self.setFixedSize(1300, 700)
         self.setWindowTitle('Asta')
         self.setWindowIcon(QIcon(f'{utils.working_dir}/assets/avatar.png'))
         self.titleBar.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)

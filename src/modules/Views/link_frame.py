@@ -5,7 +5,8 @@ import logging
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QLabel, QFileDialog
 
-from qfluentwidgets import SettingCardGroup, PushSettingCard, ScrollArea, ExpandLayout, MessageBox, HyperlinkCard
+from qfluentwidgets import SettingCardGroup, PushSettingCard, ScrollArea, ExpandLayout, MessageBox, HyperlinkCard, \
+    InfoBar, InfoBarPosition
 from qfluentwidgets import FluentIcon
 
 from ..Core.GachaReport import gacha_report_read
@@ -129,6 +130,8 @@ class LinkWidget(ScrollArea):
             importSupport = ImportSupport(tmp_uid, tmp_language)
             importSupport.SRGFSave(importFile)
             logging.info(f"[Link][Import] Imported ({tmp_uid} from {tmp_export_application})")
+        else:
+            InfoBar.error("导入失败", "导入的文件不是有效的SRGF文件", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __exportCardReturnSignal(self, uid):
         filePath = QFileDialog.getSaveFileName(self, "保存 SRGF(Json) 文件", f"./{uid}_export_data.json",

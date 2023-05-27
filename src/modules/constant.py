@@ -1,3 +1,6 @@
+APP_VERSION = "0.1.8"
+UI_VERSION = "0.9.0"
+
 SRGF_GACHATYPE = {"2": "2", "1": "1", "11": "11", "12": "12"}
 SRGF_VERSION = "v1.0"
 SRGF_DATA_MODEL = {"info": {"uid": "", "lang": "zh-cn"}, "list": []}
@@ -5,9 +8,9 @@ GACHATYPE = {"始发跃迁": "2", "群星跃迁": "1", "角色活动跃迁": "11
 
 SOFTWARE_ANNOUNCEMENT_URL = "https://raw.staticdn.net/AuroraZiling/asta.Metadata/main/announcement.txt"
 
-CHARACTER_URL = "https://wiki.biligame.com/sr/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89"
+CHARACTER_URL = "https://api-static.mihoyo.com/common/blackboard/sr_wiki/v1/home/content/list?app_sn=sr_wiki&channel_id=18"
 PERMANENT_CHARACTER_URL = "https://raw.staticdn.net/AuroraZiling/asta.Metadata/main/metadata.json"
-WEAPON_URL = "https://wiki.biligame.com/sr/%E5%85%89%E9%94%A5%E4%B8%80%E8%A7%88"
+WEAPON_URL = "https://api-static.mihoyo.com/common/blackboard/sr_wiki/v1/home/content/list?app_sn=sr_wiki&channel_id=19"
 SRGF_ITEM_ID_URL = "https://api.uigf.org/dict/starrail/{lang}.json"
 SRGF_MD5_URL = "https://api.uigf.org/dict/starrail/md5.json"
 
@@ -42,7 +45,7 @@ GITHUB_RELEASE_URL = "https://api.github.com/repos/AuroraZiling/star-rail-asta/r
 UPDATE_SCRIPT_MODEL = """
 echo "DON'T CLOSE THIS WINDOW"
 powershell -command \"Start-Sleep -s 3\"
-powershell -command \"Get-childitem -Path .. -exclude *.json,*.zip,*.bat,temp -Recurse | Remove-Item -Force -Recurse\"
+powershell -command \"Get-childitem -Path .. -exclude *.json,*.zip,*.bat,temp,data -Recurse | Remove-Item -Force -Recurse\"
 powershell -command \"Expand-Archive -Path .\\{filename} -DestinationPath ..\\ -Force\"
 powershell -command \"Remove-Item -Path .\\{filename}\"
 cd ../.
@@ -50,3 +53,111 @@ start .\\"Asta.exe\"
 powershell -command \"Remove-Item -Path .\\temp\\update.bat\"
 exit
 """
+
+SRGF_JSON_SCHEMA = {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "info": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "description": "语言 languagecode2-country/regioncode2"
+        },
+        "region_time_zone": {
+          "type": "number",
+          "description": "时区"
+        },
+        "export_timestamp": {
+          "type": "number",
+          "description": "导出 UNIX 时间戳"
+        },
+        "export_app": {
+          "type": "string",
+          "description": "导出的 App 名称"
+        },
+        "export_app_version": {
+          "type": "string",
+          "description": "导出此份记录的 App 版本号"
+        },
+        "srgf_version": {
+          "type": "string",
+          "description": "所应用的 SRGF 的版本,包含此字段以防 SRGF 出现中断性变更时，App 无法处理"
+        }
+      },
+      "description": "包含导出方定义的基本信息",
+      "required": [
+        "srgf_version",
+        "uid",
+        "lang",
+        "region_time_zone"
+      ]
+    },
+    "list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gacha_id": {
+            "type": "string",
+            "description": "卡池 Id"
+          },
+          "gacha_type": {
+            "type": "string",
+            "description": "卡池类型",
+            "enum": [
+              "1",
+              "2",
+              "11",
+              "12"
+            ]
+          },
+          "item_id": {
+            "type": "string",
+            "description": "物品 Id"
+          },
+          "count": {
+            "type": "string",
+            "description": "数量，通常为1"
+          },
+          "time": {
+            "type": "string",
+            "description": "获取物品的时间"
+          },
+          "name": {
+            "type": "string",
+            "description": "物品名称"
+          },
+          "item_type": {
+            "type": "string",
+            "description": "物品类型"
+          },
+          "rank_type": {
+            "type": "string",
+            "description": "物品星级"
+          },
+          "id": {
+            "type": "string",
+            "description": "内部 Id"
+          }
+        },
+        "required": [
+          "gacha_id",
+          "gacha_type",
+          "item_id",
+          "time",
+          "id"
+        ]
+      },
+      "description": "包含卡池记录"
+    }
+  },
+  "required": [
+    "info",
+    "list"
+  ]
+}
