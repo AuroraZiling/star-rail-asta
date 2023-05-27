@@ -1,28 +1,17 @@
 import requests
-from lxml import etree
 from ..constant import WEAPON_URL
 
 
 def categoryWeaponInStar():
-    originalData = requests.get(WEAPON_URL).text
-    html = etree.HTML(originalData)
-    level_5 = []
-    level_4 = []
-    level_3 = []
-    count = 2
-    while True:
-        try:
-            name = html.xpath(f"/html/body/div[2]/div[2]/div[4]/div[5]/div/table[2]/tbody/tr[{count}]/td[2]/a/text()")[
-                0]
-            level = html.xpath(f"/html/body/div[2]/div[2]/div[4]/div[5]/div/table[2]/tbody/tr[{count}]/td[3]/img/@alt")[
-                0].replace("星.png", '')
-            if level == '3':
-                level_3.append(name)
-            elif level == '4':
-                level_4.append(name)
-            elif level == '5':
-                level_5.append(name)
-            count += 1
-        except IndexError:
-            break
+    originalData = requests.get(WEAPON_URL).json()["data"]["list"][0]["list"]
+    level_5 = {}
+    level_4 = {}
+    level_3 = {}
+    for eachCharacter in originalData:
+        if "五星" in eachCharacter["ext"]:
+            level_5.update({eachCharacter["title"]: eachCharacter["content_id"]})
+        elif "四星" in eachCharacter["ext"]:
+            level_4.update({eachCharacter["title"]: eachCharacter["content_id"]})
+        elif "三星" in eachCharacter["ext"]:
+            level_3.update({eachCharacter["title"]: eachCharacter["content_id"]})
     return {"5": level_5, "4": level_4, "3": level_3}
