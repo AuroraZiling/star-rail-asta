@@ -1,4 +1,4 @@
-APP_VERSION = "0.1.8"
+APP_VERSION = "0.1.9"
 UI_VERSION = "0.9.0"
 
 SRGF_GACHATYPE = {"2": "2", "1": "1", "11": "11", "12": "12"}

@@ -9,6 +9,12 @@ from ....constant import COLOR_MAPPING
 utils = tools.Tools()
 
 
+def empty_chart():
+    chart = QChart()
+    chart.setBackgroundVisible(False)
+    return chart
+
+
 class Analysis:
     def __init__(self, data):
         self.data = data
@@ -23,6 +29,18 @@ class Analysis:
 
         self.total_amount = int(self.data[0]["order"])
         self.star_5 = [f"[{unit['order']}]{unit['name']}" for unit in self.data if unit['rank_type'] == "5"]
+
+        self.star_5_cost = ""
+        if self.star_5:
+            counter = 1
+            opt = []
+            for unit in reversed(self.data):
+                if unit['rank_type'] == "5":
+                    opt.append(f"[{counter}]{unit['name']}")
+                    counter = 0
+                counter += 1
+            self.star_5_cost = ' '.join(reversed(opt))
+
         self.star_5_amount = len(self.star_5)
         self.star_4 = [f"[{unit['order']}]{unit['name']}" for unit in self.data if unit['rank_type'] == "4"]
         self.star_4_amount = len(self.star_4)
@@ -43,6 +61,9 @@ class Analysis:
 
     def get_star_5_to_string(self):
         return ' '.join(self.star_5)
+
+    def get_star_5_cost_to_string(self):
+        return self.star_5_cost if self.star_5 else ""
 
     def get_star_5_amount_to_string(self):
         return str(self.star_5_amount)
@@ -116,7 +137,7 @@ class Analysis:
     def get_pie_chart(self):
 
         if not self.total_amount:
-            return QChart()
+            return empty_chart()
 
         self.chartSeries.append('5星', 0)
         self.chartSeries.append('4星', 0)

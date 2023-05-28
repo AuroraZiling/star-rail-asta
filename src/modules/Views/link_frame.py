@@ -65,7 +65,6 @@ class LinkWidget(ScrollArea):
         logging.info(f"[Link] UI Initialized")
 
     def __initWidget(self):
-        self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setViewportMargins(0, 120, 0, 20)
         self.setWidget(self.scrollWidget)
@@ -112,26 +111,27 @@ class LinkWidget(ScrollArea):
 
     def __importCardClicked(self):
         filePath = QFileDialog.getOpenFileName(self, "打开 SRGF(Json) 文件", "./", "SRGF(json) File (*.json)")[0]
-        logging.info(f"[Link][Import] Get SRGF File: {filePath}")
-        if utils.json_validator(filePath, "srgf"):
-            logging.info(f"[Sangonomiya][Link] SRGF Import File Path: {filePath}")
-            importFile = json.loads(open(filePath, 'r', encoding="utf-8").read())
-            tmp_uid = importFile["info"]["uid"]
-            tmp_language = importFile["info"]["lang"]
-            tmp_export_application = importFile["info"]["export_app"]
-            tmp_application_version = importFile["info"]["export_app_version"]
-            tmp_time_region_zome = importFile["info"]["region_time_zone"]
-            alertMessage = f'''UID: {tmp_uid}
+        if filePath:
+            logging.info(f"[Link][Import] Get SRGF File: {filePath}")
+            if utils.json_validator(filePath, "srgf"):
+                logging.info(f"[Sangonomiya][Link] SRGF Import File Path: {filePath}")
+                importFile = json.loads(open(filePath, 'r', encoding="utf-8").read())
+                tmp_uid = importFile["info"]["uid"]
+                tmp_language = importFile["info"]["lang"]
+                tmp_export_application = importFile["info"]["export_app"]
+                tmp_application_version = importFile["info"]["export_app_version"]
+                tmp_time_region_zome = importFile["info"]["region_time_zone"]
+                alertMessage = f'''UID: {tmp_uid}
 语言: {tmp_language}
 导出应用: {tmp_export_application}
 导出应用版本: {tmp_application_version}
 时区: {tmp_time_region_zome}'''
-            self.__showTextEditMessageBox("验证", "请验证如下信息:", alertMessage)
-            importSupport = ImportSupport(tmp_uid, tmp_language)
-            importSupport.SRGFSave(importFile)
-            logging.info(f"[Link][Import] Imported ({tmp_uid} from {tmp_export_application})")
-        else:
-            InfoBar.error("导入失败", "导入的文件不是有效的SRGF文件", InfoBarPosition.TOP_RIGHT, parent=self)
+                self.__showTextEditMessageBox("验证", "请验证如下信息:", alertMessage)
+                importSupport = ImportSupport(tmp_uid, tmp_language)
+                importSupport.SRGFSave(importFile)
+                logging.info(f"[Link][Import] Imported ({tmp_uid} from {tmp_export_application})")
+            else:
+                InfoBar.error("导入失败", "导入的文件不是有效的SRGF文件", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __exportCardReturnSignal(self, uid):
         filePath = QFileDialog.getSaveFileName(self, "保存 SRGF(Json) 文件", f"./{uid}_export_data.json",
