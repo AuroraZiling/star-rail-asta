@@ -12,7 +12,7 @@ def getDefaultGameDataPath():
         return 0, "Game Log Not found"
     with open(GAME_LOG_PATH, 'r', encoding='utf-8') as f:
         logFile = f.read()
-    match = re.match(r'Loading player data from (.*)StarRail_Data.*', logFile)
+    match = re.search(r'Loading player data from (.*)StarRail_Data.*', logFile)
     game_path = match.group(1) if match else None
     logging.info(f"[GachaReport.utils] Game Path get: {game_path}")
     return game_path

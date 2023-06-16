@@ -23,10 +23,9 @@ class HomeCurrentUPThread(QThread):
         self.trigger.emit(0, 0, "正在获取信息...", "未知", character1ImagePath)
         self.trigger.emit(1, 0, "正在获取信息...", "未知", character1ImagePath)
         upWeaponList = []
-        if not os.path.exists(f"{utils.working_dir}/cache/announce.json"):
-            downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.working_dir + "/cache/", "announce.json")
-            downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.working_dir + "/cache/",
-                                        "announce_icons.json")
+        downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.working_dir + "/cache/", "announce.json")
+        downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.working_dir + "/cache/",
+                                    "announce_icons.json")
         downloader.downloadFromJson(ANNOUNCE_CURRENT_UP_URL, utils.working_dir + "/cache/", "current_up.json")
         if os.path.exists(f"{utils.working_dir}/cache/current_up.json") and os.path.exists(f"{utils.working_dir}/cache/announce.json"):
             originalCurrentUPInfo = json.loads(open(f"{utils.working_dir}/cache/current_up.json", 'r', encoding="utf-8").read())["data"]["list"]

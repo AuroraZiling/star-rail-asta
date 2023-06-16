@@ -30,6 +30,12 @@ class AnnouncementWidget(QFrame):
 
         self.announceData = announcement_functions.get_announce_data()
         self.announceIconData = announcement_functions.get_announce_icon_data()
+        if not self.announceData or not self.announceIconData:
+            logging.info("[Announcement] Get announce.json")
+            downloader.downloadFromJson(ANNOUNCE_REQUEST_URL, utils.working_dir + "/cache/", "announce.json")
+            logging.info("[Announcement] Get announce_icon.json")
+            downloader.downloadFromJson(ANNOUNCE_ICON_REQUEST_URL, utils.working_dir + "/cache/",
+                                        "announce_icons.json")
         self.currentAnnounceHTMLPath = ""
 
         self.headerHBox = QHBoxLayout(self)

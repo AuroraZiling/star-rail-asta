@@ -114,7 +114,7 @@ class LinkWidget(ScrollArea):
         if filePath:
             logging.info(f"[Link][Import] Get SRGF File: {filePath}")
             if utils.json_validator(filePath, "srgf"):
-                logging.info(f"[Sangonomiya][Link] SRGF Import File Path: {filePath}")
+                logging.info(f"[Asta][Link] SRGF Import File Path: {filePath}")
                 importFile = json.loads(open(filePath, 'r', encoding="utf-8").read())
                 tmp_uid = importFile["info"]["uid"]
                 tmp_language = importFile["info"]["lang"]
