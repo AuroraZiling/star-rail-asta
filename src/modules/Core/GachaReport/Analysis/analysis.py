@@ -133,38 +133,3 @@ class Analysis:
         elif not nearest_5_star:
             guarantee_text = "暂无数据"
         return guarantee_text
-
-    def get_pie_chart(self):
-
-        if not self.total_amount:
-            return empty_chart()
-
-        self.chartSeries.append('5星', 0)
-        self.chartSeries.append('4星', 0)
-        self.chartSeries.append('3星', 0)
-
-        self.chart5Star = self.chartSeries.slices()[0]
-        self.chart5Star.setBrush(QColor(COLOR_MAPPING["5"]))
-        self.chart5Star.setLabelFont(QFont("Microsoft YaHei", 10))
-        self.chart5Star.setValue(self.star_5_amount)
-
-        self.chart4Star = self.chartSeries.slices()[1]
-        self.chart4Star.setBrush(QColor(COLOR_MAPPING["4"]))
-        self.chart4Star.setLabelFont(QFont("Microsoft YaHei", 10))
-        self.chart4Star.setValue(self.star_4_amount)
-
-        self.chart3Star = self.chartSeries.slices()[2]
-        self.chart3Star.setBrush(QColor(COLOR_MAPPING["3"]))
-        self.chart3Star.setLabelFont(QFont("Microsoft YaHei", 10))
-        self.chart3Star.setValue(self.star_3_amount)
-
-        self.chart.addSeries(self.chartSeries)
-        self.chart.setBackgroundVisible(False)
-        self.chart.createDefaultAxes()
-
-        self.chart.legend().setVisible(True)
-        self.chart.legend().setGeometry(QRectF(0, 0, 200, 200))
-        self.chart.legend().setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.chart.legend().setLabelColor(QColor(255, 255, 255) if isDarkTheme() else QColor(0, 0, 0))
-
-        return self.chart

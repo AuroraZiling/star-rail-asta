@@ -4,7 +4,7 @@ import requests
 from PySide6 import QtGui
 from PySide6.QtCharts import QChartView
 from PySide6.QtCore import Qt, QModelIndex
-from PySide6.QtGui import QColor, QPalette, QPainter
+from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QAbstractItemView, QHeaderView, \
     QTableWidgetItem, QStyleOptionViewItem
 
@@ -114,8 +114,6 @@ class GachaReportWidget(QFrame):
 
         self.bottomRightAnalysisLabel = QLabel("保底情况")
         self.bottomRightAnalysisGuaranteeLabel = QLabel("未知")
-        self.bottomRightGraphLabel = QLabel("图像", self)
-        self.bottomRightGraphView = QChartView(self)
         self.bottomRightVBox.addWidget(self.bottomRightBasicLabel)
         self.bottomRightVBox.addWidget(self.bottomRightBasicTotalLabel)
         self.bottomRightVBox.addLayout(self.bottomRightBasicLevelHBox)
@@ -124,8 +122,6 @@ class GachaReportWidget(QFrame):
         self.bottomRightVBox.addWidget(self.bottomRightBasicListTextEdit)
         self.bottomRightVBox.addWidget(self.bottomRightAnalysisLabel)
         self.bottomRightVBox.addWidget(self.bottomRightAnalysisGuaranteeLabel)
-        self.bottomRightVBox.addWidget(self.bottomRightGraphLabel)
-        self.bottomRightVBox.addWidget(self.bottomRightGraphView)
 
         self.bottomHBox.addLayout(self.bottomLeftVBox)
         self.bottomHBox.addLayout(self.bottomRightVBox)
@@ -198,7 +194,7 @@ class GachaReportWidget(QFrame):
                 self.gachaReportThread.start()
                 self.gachaReportThread.trigger.connect(self.gachaReportStatusChanged)
         else:
-            InfoBar.error("失败", "无法从游戏缓存中获取请求", InfoBarPosition.TOP_RIGHT, parent=self)
+            InfoBar.error("失败", "无法从游戏缓存中获取请求，请检查游戏目录是否正确或是否第一次打开跃迁记录", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __headerRightFullUpdateDropBtnWebCache(self):
         gachaURL = convertAPI(by_web_cache.getURL(cfg.gameDataFolder.value))
@@ -207,7 +203,7 @@ class GachaReportWidget(QFrame):
             if resp.exec():
                 self.headerRightAddUpdateDropBtn.setEnabled(False)
                 self.headerRightFullUpdateDropBtn.setEnabled(False)
-                self.gachaReportThread = GachaReportThread(gachaURL)
+                self.gachaReportThread = GachaReportThread(gachaURL, isAdd=False)
                 self.gachaReportThreadStateTooltip = StateToolTip("更新数据中", "数据更新开始",
                                                                   self)
                 self.gachaReportThreadStateTooltip.closedSignal.connect(self.__gachaReportThreadStateTooltipClosed)
@@ -216,7 +212,7 @@ class GachaReportWidget(QFrame):
                 self.gachaReportThread.start()
                 self.gachaReportThread.trigger.connect(self.gachaReportStatusChanged)
         else:
-            InfoBar.error("失败", "无法从游戏缓存中获取请求", InfoBarPosition.TOP_RIGHT, parent=self)
+            InfoBar.error("失败", "无法从游戏缓存中获取请求，请检查游戏目录是否正确或是否第一次打开跃迁记录", InfoBarPosition.TOP_RIGHT, parent=self)
 
     def __headerRightAddUpdateDropBtnURL(self):
         w = URLDialog("输入URL", "请在下方输入 MiHoYo API 的URL", self)
@@ -276,12 +272,10 @@ class GachaReportWidget(QFrame):
         self.bottomLeftGachaTable.setEnabled(mode)
         self.headerRightGachaTypeCombobox.setEnabled(mode)
         self.headerRightUIDSelectCombobox.setEnabled(mode)
-        self.bottomRightGraphLabel.setEnabled(mode)
         self.bottomRightBasicToggleBtn.setEnabled(mode)
 
     def emptyAllStatistics(self):
         self.bottomLeftGachaTable.clearContents()
-        self.bottomRightGraphView.setChart(analysis.empty_chart())
 
     def showEvent(self, a0: QtGui.QShowEvent) -> None:
         if not gacha_report_read.getUIDList():
@@ -293,7 +287,6 @@ class GachaReportWidget(QFrame):
         else:
             self.initData()
             self.setInteractive(True)
-        self.bottomRightGraphView.setBackgroundBrush(QColor(37, 37, 37) if isDarkTheme() else QColor(255, 255, 255))
 
     def __bottomRightBasicToggleBtnClicked(self):
         if self.bottomRightBasicToggleBtn.isChecked():
@@ -361,7 +354,6 @@ class GachaReportWidget(QFrame):
             style_sheet.component_style_sheet("gacha_report_push_button_4"))
 
         self.bottomRightBasicListLabel.setFont(utils.get_font(12))
-        self.bottomRightBasicListTextEdit.setFixedHeight(70)
         self.bottomRightBasicToggleBtn.setFixedWidth(160)
         self.bottomRightBasicToggleBtn.clicked.connect(self.__bottomRightBasicToggleBtnClicked)
 
@@ -371,10 +363,10 @@ class GachaReportWidget(QFrame):
         self.bottomRightCompleteAnalysisBtn.setStyleSheet(
             style_sheet.component_style_sheet("gacha_report_complete_analysis_button"))
 
+        self.bottomRightBasicListTextEdit.setReadOnly(True)
+
         self.bottomRightAnalysisLabel.setFont(utils.get_font(14))
         self.bottomRightAnalysisGuaranteeLabel.setFont(utils.get_font(10))
-        self.bottomRightGraphLabel.setFont(utils.get_font(14))
-        self.bottomRightGraphView.setRenderHint(QPainter.Antialiasing)
 
     def tableUpdateData(self, currentData):
         global rowColorMapping
@@ -403,7 +395,6 @@ class GachaReportWidget(QFrame):
         self.bottomRightBasicListTextEdit.setText(self.analyzer.get_star_5_to_string())
         self.bottomRightAnalysisGuaranteeLabel.setText(
             self.analyzer.get_guarantee(self.headerRightGachaTypeCombobox.currentText()))
-        self.bottomRightGraphView.setChart(self.analyzer.get_pie_chart())
 
     def __headerRightGachaTypeComboboxChanged(self):
         logging.info(f"[GachaReport] Gacha type selection changed")

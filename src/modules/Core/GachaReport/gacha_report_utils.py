@@ -15,7 +15,7 @@ def getDefaultGameDataPath():
     match = re.search(r'Loading player data from (.*)StarRail_Data.*', logFile)
     game_path = match.group(1) if match else None
     logging.info(f"[GachaReport.utils] Game Path get: {game_path}")
-    return game_path
+    return game_path if game_path else "未找到游戏路径"
 
 
 def extractAPI(url):

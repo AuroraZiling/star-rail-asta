@@ -42,7 +42,7 @@ logging.info("-----===== Start Tracking =====-----")
 
 def startUp():
     assetsCheck()
-    if cfg.customizeAutoDeleteLog and utils.get_log_file_amount() > 3:
+    if cfg.customizeAutoDeleteLog.value and utils.get_log_file_amount() > 3:
         utils.delete_directory(utils.log_dir)
 
 

@@ -8,7 +8,7 @@ import requests
 
 from PySide6.QtCore import QThread, Signal
 
-from ...constant import SRGF_VERSION, SRGF_DATA_MODEL, GACHATYPE, SRGF_GACHATYPE
+from ...constant import SRGF_VERSION, SRGF_DATA_MODEL, GACHATYPE
 from ..SRGF.converter import originalToSRGFListUnit
 from .gacha_report_utils import updateAPI
 from ...Scripts.Utils.tools import Tools
@@ -19,16 +19,17 @@ gachaTarget = ""
 
 class GachaReportThread(QThread):
     trigger = Signal(tuple)
+    isAdditional = False
 
     def __init__(self, gachaUrl, parent=None, isAdd=False):
         super(GachaReportThread, self).__init__(parent)
         self.uid = ""
         self.region_time_zone = ""
         self.gachaUrl = gachaUrl
-        self.isAdd = isAdd
+        self.isAdditional = isAdd
 
     def run(self):
-        if not self.isAdd:
+        if not self.isAdditional:
             SRGFExportJsonData = SRGF_DATA_MODEL
             gachaList = []
             for key in GACHATYPE.keys():
@@ -66,7 +67,7 @@ class GachaReportThread(QThread):
                 pickle.dump(SRGFExportJsonData, f)
             self.trigger.emit((1, "跃迁记录更新完毕", self.uid))
         else:
-            dataPath = f"{utils.working_dir}/data/{self.isAdd}/{self.isAdd}_data.pickle"
+            dataPath = f"{utils.working_dir}/data/{self.isAdditional}/{self.isAdditional}_data.pickle"
             if not os.path.exists(dataPath):
                 self.trigger.emit((-1, f"增量更新失败",
                                    "请检查是否对当前UID进行过全量更新"))
