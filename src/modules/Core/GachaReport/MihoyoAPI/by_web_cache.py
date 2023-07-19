@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from win32api import GetTempFileName, GetTempPath, CopyFile
 
@@ -10,7 +11,14 @@ utils = Tools()
 
 def getURL(gameDataPath):
     url = None
-    webCacheData = Path(gameDataPath) / "StarRail_Data/webCaches/Cache/Cache_Data/data_2"
+    version = None
+    for i in os.listdir(Path(gameDataPath) / "StarRail_Data/webCaches/"):
+        match = re.match(r'^(\d+).(\d+).(\d+).(\d+)$', i)
+        if match:
+            version = match.group(0)
+    if version is None:
+        return None
+    webCacheData = Path(gameDataPath) / f"StarRail_Data/webCaches/{version}/Cache/Cache_Data/data_2"
     webCacheDataTmp = Path(GetTempFileName(GetTempPath(), f"webCacheData", 0)[0])
     if not os.path.exists(str(webCacheData)):
         return None
