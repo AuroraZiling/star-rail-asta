@@ -1,4 +1,4 @@
-APP_VERSION = "0.2.3"
+APP_VERSION = "0.2.2"
 UI_VERSION = "0.9.0"
 
 SRGF_GACHATYPE = {"2": "2", "1": "1", "11": "11", "12": "12"}
@@ -45,12 +45,11 @@ GITHUB_RELEASE_URL = "https://api.github.com/repos/AuroraZiling/star-rail-asta/r
 UPDATE_SCRIPT_MODEL = """
 echo "DON'T CLOSE THIS WINDOW"
 powershell -command \"Start-Sleep -s 3\"
-powershell -command \"Get-childitem -Path .. -exclude *.json,*.zip,*.bat,temp,data -Recurse | Remove-Item -Force -Recurse\"
-powershell -command \"Expand-Archive -Path .\\{filename} -DestinationPath ..\\ -Force\"
-powershell -command \"Remove-Item -Path .\\{filename}\"
-cd ../.
-start .\\"Asta.exe\"
-powershell -command \"Remove-Item -Path .\\temp\\update.bat\"
+powershell -command \"Get-childitem -Path {working_dir} -exclude *.json,*.zip,*.bat,temp,data -Recurse | Remove-Item -Force -Recurse\"
+powershell -command \"Expand-Archive -Path {working_dir}\\temp\\{filename} -DestinationPath ..\\ -Force\"
+powershell -command \"Remove-Item -Path {working_dir}\\temp\\{filename}\"
+start {working_dir}\\"Asta.exe\"
+echo "NOW, YOU CAN SAFELY CLOSE THIS WINDOW"
 exit
 """
 

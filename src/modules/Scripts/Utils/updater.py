@@ -24,7 +24,7 @@ def installUpdate():
         return
     with open('temp/update.bat', 'w') as f:
         target = [i for i in os.listdir(f"{utils.working_dir}/temp") if ".bat" not in i]
-        f.write(UPDATE_SCRIPT_MODEL.format(filename=target[0]))
+        f.write(UPDATE_SCRIPT_MODEL.format(filename=target[0], working_dir=utils.working_dir))
 
     subprocess.Popen(
         [
