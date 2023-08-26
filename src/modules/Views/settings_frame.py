@@ -293,12 +293,13 @@ class SettingWidget(ScrollArea):
             InfoBar.error("错误", content, InfoBarPosition.TOP_RIGHT, parent=self)
         elif status == 0:
             self.newVersion = content
-            self.isNeedUpdateThreadStateTooltip.setState(True)
-            self.isNeedUpdateThreadStateTooltip = None
             w = ComboboxDialog("更新", f"发现新版本: {self.newVersion['tag_name']}\n是否更新?",
                                ["Coding Artifact (国内推荐)", "Github Release (国外推荐)"], self)
             w.returnSignal.connect(self.__updateReturnSignal)
             w.exec()
+
+        self.isNeedUpdateThreadStateTooltip.setState(True)
+        self.isNeedUpdateThreadStateTooltip = None
 
     def __updateCheckCardClicked(self):
         self.updateCheckCard.setEnabled(False)

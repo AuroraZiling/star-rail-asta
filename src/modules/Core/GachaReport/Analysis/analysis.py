@@ -79,13 +79,13 @@ class Analysis:
 
     def get_star_5_percent_to_string(self):
         if self.total_amount:
-            return f"{round(self.star_5_amount / self.total_amount, 2)}%"
+            return f"{round(self.star_5_amount / self.total_amount * 100, 2)}%"
         else:
             return "0.00%"
 
     def get_star_4_percent_to_string(self):
         if self.total_amount:
-            return f"{round(self.star_4_amount / self.total_amount, 2)}%"
+            return f"{round(self.star_4_amount / self.total_amount * 100, 2)}%"
         else:
             return "0.00%"
 
